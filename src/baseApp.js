@@ -60,8 +60,8 @@ export class BaseApp {
 
     keyDown(event) {
         //Key press functionality
-        switch(event.keyCode) {
-            case 83: //'S'
+        switch(event.key) {
+            case "s":
                 if (this.stats) {
                     if (this.statsShowing) {
                         $("#Stats-output").hide();
@@ -72,9 +72,20 @@ export class BaseApp {
                     }
                 }
                 break;
-            case 80: //'P'
+            case "p":
                 console.log('Cam =', this.camera.position);
                 console.log('Look =', this.controls.target);
+                break;
+
+            case "l":
+                this.renderOveride = true;
+                console.log("Locked");
+                break;
+
+            case "u":
+                this.renderOveride = false;
+                console.log("Unlocked");
+                break;
         }
     }
 
@@ -207,10 +218,14 @@ export class BaseApp {
     run() {
         this.update();
         if (this.renderUpdate) {
-            this.renderVolume();
+            if (!this.renderOveride) {
+                this.renderVolume();
+            }
+            
+            this.renderer.render( this.scene, this.camera );
             this.renderUpdate = false;
         }
-        this.renderer.render( this.scene, this.camera );
+        
         if(this.stats) this.stats.update();
         requestAnimationFrame(() => {
             this.run();

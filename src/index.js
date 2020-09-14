@@ -29,7 +29,7 @@ const fshader = `
     void main() {
         vec3 texCoords = vec3((texPosition.x/u_slices.x) + 0.5, (texPosition.y/u_slices.y) + 0.5, (texPosition.z/u_slices.z) + 0.5);
         gl_FragColor = texture(u_data, texCoords);
-        if (gl_FragColor.r < 0.05) {
+        if (gl_FragColor.r < 0.1) {
             discard;
         }
         gl_FragColor.a = gl_FragColor.r;
@@ -56,6 +56,7 @@ class MedicalViz extends BaseApp {
         this.planeOffset;
         this.startSlice = 1;
         this.intersectPlane = new THREE.Plane();
+        this.renderOveride = false;
 
         //Temp variables
         this.tempVec = new THREE.Vector3();
@@ -82,6 +83,7 @@ class MedicalViz extends BaseApp {
         this.volumeShader = new THREE.ShaderMaterial({
             uniforms: uniforms,
             transparent: true,
+            side: THREE.DoubleSide,
             vertexShader: vshader,
             fragmentShader: fshader
         });
@@ -90,7 +92,7 @@ class MedicalViz extends BaseApp {
         let planeGeom = new THREE.PlaneBufferGeometry(APPCONFIG.PLANE_SIZE, APPCONFIG.PLANE_SIZE);
         let planeMat = new THREE.MeshLambertMaterial( {color: 0xffffff});
         this.viewingPlane = new THREE.Mesh(planeGeom, planeMat);
-        this.scene.add(this.viewingPlane);
+        //this.scene.add(this.viewingPlane);
 
         // Ref cube
         let cubeGeom = new THREE.BoxBufferGeometry(10, 10, 10);
