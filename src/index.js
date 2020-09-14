@@ -75,11 +75,11 @@ class MedicalViz extends BaseApp {
         let texture = loader.load("../textures/cns_tra750.png");
 
         const uniforms = {
-            pointTexture: { value: texture }
+            u_data: { value: texture }
         }
 
         // Shader material
-        const shaderMat = new THREE.ShaderMaterial({
+        this.shaderMat = new THREE.ShaderMaterial({
             uniforms: uniforms,
             transparent: true,
             vertexShader: vshader,
@@ -90,7 +90,7 @@ class MedicalViz extends BaseApp {
         let planeGeom = new THREE.PlaneBufferGeometry(APPCONFIG.PLANE_SIZE, APPCONFIG.PLANE_SIZE);
         let planeMat = new THREE.MeshLambertMaterial( {color: 0xffffff});
         this.viewingPlane = new THREE.Mesh(planeGeom, planeMat);
-        this.scene.add(plane);
+        this.scene.add(this.viewingPlane);
 
         // Ref cube
         let cubeGeom = new THREE.BoxBufferGeometry(10, 10, 10);
@@ -108,31 +108,31 @@ class MedicalViz extends BaseApp {
         const BACK_EDGE_Z = -110.5;
 
         // Vertices
-        volumeVertices.push(new THREE.Vector3(RIGHT_EDGE_X, TOP_EDGE_Y, FRONT_EDGE_Z));
-        volumeVertices.push(new THREE.Vector3(RIGHT_EDGE_X, TOP_EDGE_Y, BACK_EDGE_Z));
-        volumeVertices.push(new THREE.Vector3(RIGHT_EDGE_X, BOTTOM_EDGE_Y, FRONT_EDGE_Z));
-        volumeVertices.push(new THREE.Vector3(LEFT_EDGE_X, TOP_EDGE_Y, FRONT_EDGE_Z));
+        this.volumeVertices.push(new THREE.Vector3(RIGHT_EDGE_X, TOP_EDGE_Y, FRONT_EDGE_Z));
+        this.volumeVertices.push(new THREE.Vector3(RIGHT_EDGE_X, TOP_EDGE_Y, BACK_EDGE_Z));
+        this.volumeVertices.push(new THREE.Vector3(RIGHT_EDGE_X, BOTTOM_EDGE_Y, FRONT_EDGE_Z));
+        this.volumeVertices.push(new THREE.Vector3(LEFT_EDGE_X, TOP_EDGE_Y, FRONT_EDGE_Z));
 
-        volumeVertices.push(new THREE.Vector3(LEFT_EDGE_X, TOP_EDGE_Y, BACK_EDGE_Z));
-        volumeVertices.push(new THREE.Vector3(RIGHT_EDGE_X, BOTTOM_EDGE_Y, BACK_EDGE_Z));
-        volumeVertices.push(new THREE.Vector3(LEFT_EDGE_X, BOTTOM_EDGE_Y, FRONT_EDGE_Z));
-        volumeVertices.push(new THREE.Vector3(LEFT_EDGE_X, BOTTOM_EDGE_Y, BACK_EDGE_Z));
+        this.volumeVertices.push(new THREE.Vector3(LEFT_EDGE_X, TOP_EDGE_Y, BACK_EDGE_Z));
+        this.volumeVertices.push(new THREE.Vector3(RIGHT_EDGE_X, BOTTOM_EDGE_Y, BACK_EDGE_Z));
+        this.volumeVertices.push(new THREE.Vector3(LEFT_EDGE_X, BOTTOM_EDGE_Y, FRONT_EDGE_Z));
+        this.volumeVertices.push(new THREE.Vector3(LEFT_EDGE_X, BOTTOM_EDGE_Y, BACK_EDGE_Z));
 
         // Lines
-        volumeLines.push(new THREE.Line3(volumeVertices[0], volumeVertices[1]));
-        volumeLines.push(new THREE.Line3(volumeVertices[1], volumeVertices[4]));
-        volumeLines.push(new THREE.Line3(volumeVertices[4], volumeVertices[7]));
-        volumeLines.push(new THREE.Line3(volumeVertices[1], volumeVertices[5]));
+        this.volumeLines.push(new THREE.Line3(this.volumeVertices[0], this.volumeVertices[1]));
+        this.volumeLines.push(new THREE.Line3(this.volumeVertices[1], this.volumeVertices[4]));
+        this.volumeLines.push(new THREE.Line3(this.volumeVertices[4], this.volumeVertices[7]));
+        this.volumeLines.push(new THREE.Line3(this.volumeVertices[1], this.volumeVertices[5]));
 
-        volumeLines.push(new THREE.Line3(volumeVertices[0], volumeVertices[2]));
-        volumeLines.push(new THREE.Line3(volumeVertices[2], volumeVertices[5]));
-        volumeLines.push(new THREE.Line3(volumeVertices[5], volumeVertices[7]));
-        volumeLines.push(new THREE.Line3(volumeVertices[2], volumeVertices[6]));
+        this.volumeLines.push(new THREE.Line3(this.volumeVertices[0], this.volumeVertices[2]));
+        this.volumeLines.push(new THREE.Line3(this.volumeVertices[2], this.volumeVertices[5]));
+        this.volumeLines.push(new THREE.Line3(this.volumeVertices[5], this.volumeVertices[7]));
+        this.volumeLines.push(new THREE.Line3(this.volumeVertices[2], this.volumeVertices[6]));
 
-        volumeLines.push(new THREE.Line3(volumeVertices[0], volumeVertices[3]));
-        volumeLines.push(new THREE.Line3(volumeVertices[3], volumeVertices[6]));
-        volumeLines.push(new THREE.Line3(volumeVertices[6], volumeVertices[7]));
-        volumeLines.push(new THREE.Line3(volumeVertices[3], volumeVertices[4]));
+        this.volumeLines.push(new THREE.Line3(this.volumeVertices[0], this.volumeVertices[3]));
+        this.volumeLines.push(new THREE.Line3(this.volumeVertices[3], this.volumeVertices[6]));
+        this.volumeLines.push(new THREE.Line3(this.volumeVertices[6], this.volumeVertices[7]));
+        this.volumeLines.push(new THREE.Line3(this.volumeVertices[3], this.volumeVertices[4]));
 
         // Load medical image data
         let modelLoader = new NRRDLoader().load("./models/nrrd/MRIDataPNG.nrrd", volume => {
@@ -241,7 +241,7 @@ class MedicalViz extends BaseApp {
             //currentMesh = new THREE.Mesh(currentGeometry, wireframeWhite);
             currentGeometry.computeBoundingSphere();
             currentGeometry.computeFaceNormals();
-            currentMesh = new THREE.Mesh(currentGeometry, volumeShader);
+            currentMesh = new THREE.Mesh(currentGeometry, this.volumeShader);
             this.root.add(currentMesh);
         }
         //displayElem.textContent = startSlice;
@@ -297,7 +297,7 @@ class MedicalViz extends BaseApp {
         for (let i=0, numSegs=this.lineIndices.length/2; i<numSegs; ++i) {
             currentStart = this.lineIndices[currentIndex];
             currentEnd = this.lineIndices[currentIndex + 1];
-            volumeLines[i].set(volumeVertices[currentStart], volumeVertices[currentEnd]);
+            this.volumeLines[i].set(this.volumeVertices[currentStart], this.volumeVertices[currentEnd]);
             currentIndex += 2;
         }
 
@@ -342,7 +342,7 @@ class MedicalViz extends BaseApp {
         let intersectPoint = new THREE.Vector3();
 
         for (let i=0, numLines=lineNumbers.length; i<numLines; ++i) {
-            intersects = plane.intersectLine(volumeLines[lineNumbers[i]], intersectPoint);
+            intersects = plane.intersectLine(this.volumeLines[lineNumbers[i]], intersectPoint);
             if (intersects) {
                 return intersectPoint;
             }

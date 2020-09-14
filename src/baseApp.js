@@ -204,6 +204,7 @@ export class BaseApp {
         this.update();
         if (this.renderUpdate) {
             this.renderVolume();
+            this.renderUpdate = false;
         }
         this.renderer.render( this.scene, this.camera );
         if(this.stats) this.stats.update();
