@@ -20,12 +20,18 @@ const vshader = `
 `
 
 const fshader = `
+    precision mediump sampler3D;
+
     varying vec4 texPosition;
-    uniform sampler2D pointTexture;
+    uniform vec3 u_slices;
+    uniform sampler3D u_data;
 
     void main() {
-        vec2 texCoords = vec2((texPosition.x/250.0) + 0.5, (texPosition.y/250.0) + 0.5);
-        gl_FragColor = texture2D(pointTexture, texCoords);
+        vec3 texCoords = vec3((texPosition.x/u_slices.x) + 0.5, (texPosition.y/u_slices.y) + 0.5, (texPosition.z/u_slices.z) + 0.5);
+        gl_FragColor = texture(u_data, texCoords);
+        if (gl_FragColor.r < 0.05) {
+            discard;
+        }
         gl_FragColor.a = gl_FragColor.r;
     }
 `
@@ -43,14 +49,12 @@ class MedicalViz extends BaseApp {
         this.renderUpdate = false;
 
         // Volume attributes
-        this.volumeVertices = [];
-        this.volumeLines = [];
         this.lineIndices = [];
         this.planeNormal = new THREE.Vector3();
         this.viewingDir = new THREE.Line3();
         this.offset = new THREE.Vector3();
         this.planeOffset;
-        this.startSlice = 0;
+        this.startSlice = 1;
         this.intersectPlane = new THREE.Plane();
 
         //Temp variables
@@ -69,17 +73,13 @@ class MedicalViz extends BaseApp {
         this.root = new THREE.Object3D();
         this.scene.add(this.root);
 
-        // Textures
-        let loader = new THREE.TextureLoader();
-
-        let texture = loader.load("../textures/cns_tra750.png");
-
         const uniforms = {
-            u_data: { value: texture }
+            u_data: { value: null },
+            u_slices: { value: new THREE.Vector3(160, 256, 221)}
         }
 
         // Shader material
-        this.shaderMat = new THREE.ShaderMaterial({
+        this.volumeShader = new THREE.ShaderMaterial({
             uniforms: uniforms,
             transparent: true,
             vertexShader: vshader,
@@ -108,31 +108,35 @@ class MedicalViz extends BaseApp {
         const BACK_EDGE_Z = -110.5;
 
         // Vertices
-        this.volumeVertices.push(new THREE.Vector3(RIGHT_EDGE_X, TOP_EDGE_Y, FRONT_EDGE_Z));
-        this.volumeVertices.push(new THREE.Vector3(RIGHT_EDGE_X, TOP_EDGE_Y, BACK_EDGE_Z));
-        this.volumeVertices.push(new THREE.Vector3(RIGHT_EDGE_X, BOTTOM_EDGE_Y, FRONT_EDGE_Z));
-        this.volumeVertices.push(new THREE.Vector3(LEFT_EDGE_X, TOP_EDGE_Y, FRONT_EDGE_Z));
+        let volumeVertices = [];
+        volumeVertices.push(new THREE.Vector3(RIGHT_EDGE_X, TOP_EDGE_Y, FRONT_EDGE_Z));
+        volumeVertices.push(new THREE.Vector3(RIGHT_EDGE_X, TOP_EDGE_Y, BACK_EDGE_Z));
+        volumeVertices.push(new THREE.Vector3(RIGHT_EDGE_X, BOTTOM_EDGE_Y, FRONT_EDGE_Z));
+        volumeVertices.push(new THREE.Vector3(LEFT_EDGE_X, TOP_EDGE_Y, FRONT_EDGE_Z));
 
-        this.volumeVertices.push(new THREE.Vector3(LEFT_EDGE_X, TOP_EDGE_Y, BACK_EDGE_Z));
-        this.volumeVertices.push(new THREE.Vector3(RIGHT_EDGE_X, BOTTOM_EDGE_Y, BACK_EDGE_Z));
-        this.volumeVertices.push(new THREE.Vector3(LEFT_EDGE_X, BOTTOM_EDGE_Y, FRONT_EDGE_Z));
-        this.volumeVertices.push(new THREE.Vector3(LEFT_EDGE_X, BOTTOM_EDGE_Y, BACK_EDGE_Z));
+        volumeVertices.push(new THREE.Vector3(LEFT_EDGE_X, TOP_EDGE_Y, BACK_EDGE_Z));
+        volumeVertices.push(new THREE.Vector3(RIGHT_EDGE_X, BOTTOM_EDGE_Y, BACK_EDGE_Z));
+        volumeVertices.push(new THREE.Vector3(LEFT_EDGE_X, BOTTOM_EDGE_Y, FRONT_EDGE_Z));
+        volumeVertices.push(new THREE.Vector3(LEFT_EDGE_X, BOTTOM_EDGE_Y, BACK_EDGE_Z));
 
-        // Lines
-        this.volumeLines.push(new THREE.Line3(this.volumeVertices[0], this.volumeVertices[1]));
-        this.volumeLines.push(new THREE.Line3(this.volumeVertices[1], this.volumeVertices[4]));
-        this.volumeLines.push(new THREE.Line3(this.volumeVertices[4], this.volumeVertices[7]));
-        this.volumeLines.push(new THREE.Line3(this.volumeVertices[1], this.volumeVertices[5]));
+        let volumeLines = [];
+        volumeLines.push(new THREE.Line3(volumeVertices[0], volumeVertices[1]));
+        volumeLines.push(new THREE.Line3(volumeVertices[1], volumeVertices[4]));
+        volumeLines.push(new THREE.Line3(volumeVertices[4], volumeVertices[7]));
+        volumeLines.push(new THREE.Line3(volumeVertices[1], volumeVertices[5]));
 
-        this.volumeLines.push(new THREE.Line3(this.volumeVertices[0], this.volumeVertices[2]));
-        this.volumeLines.push(new THREE.Line3(this.volumeVertices[2], this.volumeVertices[5]));
-        this.volumeLines.push(new THREE.Line3(this.volumeVertices[5], this.volumeVertices[7]));
-        this.volumeLines.push(new THREE.Line3(this.volumeVertices[2], this.volumeVertices[6]));
+        volumeLines.push(new THREE.Line3(volumeVertices[0], volumeVertices[2]));
+        volumeLines.push(new THREE.Line3(volumeVertices[2], volumeVertices[5]));
+        volumeLines.push(new THREE.Line3(volumeVertices[5], volumeVertices[7]));
+        volumeLines.push(new THREE.Line3(volumeVertices[2], volumeVertices[6]));
 
-        this.volumeLines.push(new THREE.Line3(this.volumeVertices[0], this.volumeVertices[3]));
-        this.volumeLines.push(new THREE.Line3(this.volumeVertices[3], this.volumeVertices[6]));
-        this.volumeLines.push(new THREE.Line3(this.volumeVertices[6], this.volumeVertices[7]));
-        this.volumeLines.push(new THREE.Line3(this.volumeVertices[3], this.volumeVertices[4]));
+        volumeLines.push(new THREE.Line3(volumeVertices[0], volumeVertices[3]));
+        volumeLines.push(new THREE.Line3(volumeVertices[3], volumeVertices[6]));
+        volumeLines.push(new THREE.Line3(volumeVertices[6], volumeVertices[7]));
+        volumeLines.push(new THREE.Line3(volumeVertices[3], volumeVertices[4]));
+
+        this.volumeVertices = volumeVertices;
+        this.volumeLines = volumeLines;
 
         // Load medical image data
         let modelLoader = new NRRDLoader().load("./models/nrrd/MRIDataPNG.nrrd", volume => {
