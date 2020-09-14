@@ -43,6 +43,7 @@ export class BaseApp {
         this.renderer = new THREE.WebGLRenderer( { canvas: canvas, context: context } );
         this.renderer.setPixelRatio( window.devicePixelRatio );
         this.renderer.setSize( window.innerWidth, window.innerHeight );
+        //this.renderer.sortObjects = false;
         document.body.appendChild( this.renderer.domElement );
 
         window.addEventListener('keydown', event => {

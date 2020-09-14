@@ -248,6 +248,7 @@ class MedicalViz extends BaseApp {
             currentGeometry.computeBoundingSphere();
             currentGeometry.computeFaceNormals();
             currentMesh = new THREE.Mesh(currentGeometry, this.volumeShader);
+            currentMesh.renderOrder = this.numSlices - slice;
             this.root.add(currentMesh);
         }
         //displayElem.textContent = startSlice;
