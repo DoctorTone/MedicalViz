@@ -38,6 +38,21 @@ const fshader = `
 `
 
 const PLANE_INC = 1.0;
+// Line indices
+const lineIndices0 = [];
+lineIndices0.push(0, 1);
+lineIndices0.push(1, 4);
+lineIndices0.push(4, 7);
+lineIndices0.push(1, 5);
+lineIndices0.push(0, 2);
+lineIndices0.push(2, 5);
+lineIndices0.push(5, 7);
+lineIndices0.push(2, 6);
+lineIndices0.push(0, 3);
+lineIndices0.push(3, 6);
+lineIndices0.push(6, 7);
+lineIndices0.push(3, 4);
+
 class MedicalViz extends BaseApp {
     constructor() {
         super();
@@ -50,7 +65,7 @@ class MedicalViz extends BaseApp {
         this.renderUpdate = false;
 
         // Volume attributes
-        this.lineIndices = [];
+        this.currentLineIndices;
         this.planeNormal = new THREE.Vector3();
         this.viewingDir = new THREE.Line3();
         this.offset = new THREE.Vector3();
@@ -226,7 +241,7 @@ class MedicalViz extends BaseApp {
         let currentMesh;
         for (let slice=0; slice<this.numSlices; ++slice) {
             currentGeometry = new THREE.Geometry();
-            intersectionPoints = this.getIntersectionPoints(nearest.nearest, this.intersectPlane);
+            intersectionPoints = this.getIntersectionPoints(nearest, this.intersectPlane);
             for (let i=0, numPoints=intersectionPoints.length; i<numPoints; ++i) {
                 currentGeometry.vertices.push(new THREE.Vector3().copy(intersectionPoints[i]));
             }
@@ -259,21 +274,9 @@ class MedicalViz extends BaseApp {
     }
 
     getIntersectionPoints(nearestVertex, intersectPlane) {
-        this.lineIndices.length = 0;
         switch (nearestVertex) {
             case 0:
-                this.lineIndices.push(0, 1);
-                this.lineIndices.push(1, 4);
-                this.lineIndices.push(4, 7);
-                this.lineIndices.push(1, 5);
-                this.lineIndices.push(0, 2);
-                this.lineIndices.push(2, 5);
-                this.lineIndices.push(5, 7);
-                this.lineIndices.push(2, 6);
-                this.lineIndices.push(0, 3);
-                this.lineIndices.push(3, 6);
-                this.lineIndices.push(6, 7);
-                this.lineIndices.push(3, 4);
+                this.currentLineIndices = lineIndices0;
                 break;
 
             case 1:
@@ -329,9 +332,9 @@ class MedicalViz extends BaseApp {
         let currentIndex = 0
         let currentStart;
         let currentEnd;
-        for (let i=0, numSegs=this.lineIndices.length/2; i<numSegs; ++i) {
-            currentStart = this.lineIndices[currentIndex];
-            currentEnd = this.lineIndices[currentIndex + 1];
+        for (let i=0, numSegs=this.currentLineIndices.length/2; i<numSegs; ++i) {
+            currentStart = this.currentLineIndices[currentIndex];
+            currentEnd = this.currentLineIndices[currentIndex + 1];
             this.volumeLines[i].set(this.volumeVertices[currentStart], this.volumeVertices[currentEnd]);
             currentIndex += 2;
         }
