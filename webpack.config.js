@@ -1,6 +1,9 @@
 const HtmlWebpackPlugin = require("html-webpack-plugin");
+const MiniCssExtractPlugin = require("mini-css-extract-plugin");
 
 module.exports = {
+    mode: "development",
+    devtool: "inline-source-map",
     module: {
         rules: [
             {
@@ -39,5 +42,9 @@ module.exports = {
             template: "./src/index.html",
             filename: "./index.html"
         }),
+        new MiniCssExtractPlugin({
+            filename: "[name].css",
+            chunkFilename: "[id].css"
+        })
     ]
 }

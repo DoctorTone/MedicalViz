@@ -138,7 +138,7 @@ export class BaseApp {
 
 
         let pointLight = new THREE.PointLight(SceneConfig.pointLightColour);
-        pointLight.position.set(0,1000,1500);
+        pointLight.position.set(100,100,400);
         pointLight.name = 'PointLight';
         scene.add(pointLight);
 
@@ -202,6 +202,9 @@ export class BaseApp {
 
     run() {
         this.update();
+        if (this.renderUpdate) {
+            this.renderVolume();
+        }
         this.renderer.render( this.scene, this.camera );
         if(this.stats) this.stats.update();
         requestAnimationFrame(() => {
