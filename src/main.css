@@ -8,3 +8,12 @@ body {
     overscroll-behavior: none;
     overflow: hidden;
 }
+
+.panel {
+	position: absolute;
+}
+
+#nearest {
+	top: 1%;
+	left: 1%;
+}

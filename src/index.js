@@ -199,7 +199,7 @@ class MedicalViz extends BaseApp {
         // Plane offset
         let nearest = this.getClosestVertex(this.volumeVertices, this.camera.position);
         // DEBUG
-        console.log("Nearest = ", nearest);
+        $("#nearestValue").html(nearest);
 
         this.viewingDir.set(this.controls.target, this.camera.position);
         this.viewingDir.closestPointToPoint(this.volumeVertices[nearest], false, this.offset);
