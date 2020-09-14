@@ -37,7 +37,7 @@ const fshader = `
     }
 `
 
-const PLANE_INC = 0.25;
+const PLANE_INC = 1.0;
 class MedicalViz extends BaseApp {
     constructor() {
         super();
@@ -111,7 +111,7 @@ class MedicalViz extends BaseApp {
         const BACK_EDGE_Z = -110.5;
 
         // Vertices
-        let volumeVertices = [];
+        const volumeVertices = [];
         volumeVertices.push(new THREE.Vector3(RIGHT_EDGE_X, TOP_EDGE_Y, FRONT_EDGE_Z));
         volumeVertices.push(new THREE.Vector3(RIGHT_EDGE_X, TOP_EDGE_Y, BACK_EDGE_Z));
         volumeVertices.push(new THREE.Vector3(RIGHT_EDGE_X, BOTTOM_EDGE_Y, FRONT_EDGE_Z));
@@ -198,8 +198,11 @@ class MedicalViz extends BaseApp {
 
         // Plane offset
         let nearest = this.getClosestVertex(this.volumeVertices, this.camera.position);
+        // DEBUG
+        console.log("Nearest = ", nearest);
+
         this.viewingDir.set(this.controls.target, this.camera.position);
-        this.viewingDir.closestPointToPoint(nearest.vertex, false, this.offset);
+        this.viewingDir.closestPointToPoint(this.volumeVertices[nearest], false, this.offset);
 
         // Viewing plane
         this.viewingPlane.position.copy(this.offset);
@@ -274,12 +277,36 @@ class MedicalViz extends BaseApp {
                 break;
 
             case 1:
+                this.lineIndices.push(1, 4);
+                this.lineIndices.push(4, 3);
+                this.lineIndices.push(3, 6);
+                this.lineIndices.push(4, 7);
+                this.lineIndices.push(1, 5);
+                this.lineIndices.push(5, 7);
+                this.lineIndices.push(7, 6);
+                this.lineIndices.push(5, 2);
+                this.lineIndices.push(1, 0);
+                this.lineIndices.push(0, 2);
+                this.lineIndices.push(2, 6);
+                this.lineIndices.push(0, 3);
                 break;
 
             case 2:
                 break;
 
             case 3:
+                this.lineIndices.push(3, 0);
+                this.lineIndices.push(0, 1);
+                this.lineIndices.push(1, 5);
+                this.lineIndices.push(0, 2);
+                this.lineIndices.push(3, 6);
+                this.lineIndices.push(6, 2);
+                this.lineIndices.push(2, 5);
+                this.lineIndices.push(6, 7);
+                this.lineIndices.push(3, 4);
+                this.lineIndices.push(4, 7);
+                this.lineIndices.push(7, 5);
+                this.lineIndices.push(4, 1);
                 break;
 
             case 4:
@@ -402,10 +429,7 @@ class MedicalViz extends BaseApp {
             }
         }
 
-        return {
-            nearest: nearestVertex,
-            vertex: vertices[nearestVertex]
-        }
+        return nearestVertex;
     }
 }
 
