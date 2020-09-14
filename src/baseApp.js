@@ -187,6 +187,10 @@ export class BaseApp {
 
         let lookAt = new THREE.Vector3(SceneConfig.LookAtPos.x, SceneConfig.LookAtPos.y, SceneConfig.LookAtPos.z);
         this.controls.target.copy(lookAt);
+
+        this.controls.addEventListener("change", () => {
+            this.renderUpdate = true;
+        });
     }
 
     setCamera(mode) {
