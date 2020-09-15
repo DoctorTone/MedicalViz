@@ -1,5 +1,5 @@
 //Common base class for web apps
-
+import $ from "jquery";
 import { SceneConfig } from "./sceneConfig";
 import * as THREE from "three";
 //import * as TrackballControls from "three-trackballcontrols";
@@ -108,7 +108,7 @@ export class BaseApp {
         event.preventDefault();
         
         if (this.mouse.down) {
-            this.sliceScale = 4;
+            this.sliceScale = $("#sampleScale").val();
             this.renderUpdate = true;
         }
     }
