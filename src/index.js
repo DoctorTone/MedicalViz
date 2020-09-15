@@ -39,6 +39,9 @@ const fshader = `
         gl_FragColor.b = gl_FragColor.g = gl_FragColor.r;
         gl_FragColor.a = gl_FragColor.r;
         gl_FragColor.a *= u_alphaScale;
+        if (gl_FragColor.r > 0.75) {
+            gl_FragColor.g = gl_FragColor.b = 0.0;
+        }
     }
 `
 
