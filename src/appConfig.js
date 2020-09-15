@@ -18,4 +18,61 @@ const APPCONFIG = {
     PLANE_SIZE: 250
 }
 
-export { APPCONFIG };
+// Line indices
+const lineIndices0 = [];
+lineIndices0.push(0, 1);
+lineIndices0.push(1, 4);
+lineIndices0.push(4, 7);
+lineIndices0.push(1, 5);
+lineIndices0.push(0, 2);
+lineIndices0.push(2, 5);
+lineIndices0.push(5, 7);
+lineIndices0.push(2, 6);
+lineIndices0.push(0, 3);
+lineIndices0.push(3, 6);
+lineIndices0.push(6, 7);
+lineIndices0.push(3, 4);
+
+const lineIndices1 = [];
+lineIndices1.push(1, 4);
+lineIndices1.push(4, 3);
+lineIndices1.push(3, 6);
+lineIndices1.push(4, 7);
+lineIndices1.push(1, 5);
+lineIndices1.push(5, 7);
+lineIndices1.push(7, 6);
+lineIndices1.push(5, 2);
+lineIndices1.push(1, 0);
+lineIndices1.push(0, 2);
+lineIndices1.push(2, 6);
+lineIndices1.push(0, 3);
+
+const lineIndices3 = [];
+lineIndices3.push(3, 0);
+lineIndices3.push(0, 1);
+lineIndices3.push(1, 5);
+lineIndices3.push(0, 2);
+lineIndices3.push(3, 6);
+lineIndices3.push(6, 2);
+lineIndices3.push(2, 5);
+lineIndices3.push(6, 7);
+lineIndices3.push(3, 4);
+lineIndices3.push(4, 7);
+lineIndices3.push(7, 5);
+lineIndices3.push(4, 1);
+
+const lineIndices4 = [];
+lineIndices4.push(4, 3);
+lineIndices4.push(3, 0);
+lineIndices4.push(0, 2);
+lineIndices4.push(3, 6);
+lineIndices4.push(4, 7);
+lineIndices4.push(7, 6);
+lineIndices4.push(6, 2);
+lineIndices4.push(7, 5);
+lineIndices4.push(4, 1);
+lineIndices4.push(1, 5);
+lineIndices4.push(5, 2);
+lineIndices4.push(1, 0);
+
+export { APPCONFIG, lineIndices0, lineIndices1, lineIndices3, lineIndices4 };

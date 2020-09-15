@@ -4,7 +4,7 @@ import * as THREE from "three";
 let TrackballControls = require("three-trackballcontrols");
 
 import { BaseApp } from "./baseApp";
-import { APPCONFIG } from "./appConfig";
+import { APPCONFIG, lineIndices0, lineIndices1, lineIndices3, lineIndices4 } from "./appConfig";
 import { NRRDLoader } from "./NRRDLoader";
 
 import "./main.css";
@@ -38,20 +38,26 @@ const fshader = `
 `
 
 const PLANE_INC = 1.0;
-// Line indices
-const lineIndices0 = [];
-lineIndices0.push(0, 1);
-lineIndices0.push(1, 4);
-lineIndices0.push(4, 7);
-lineIndices0.push(1, 5);
-lineIndices0.push(0, 2);
-lineIndices0.push(2, 5);
-lineIndices0.push(5, 7);
-lineIndices0.push(2, 6);
-lineIndices0.push(0, 3);
-lineIndices0.push(3, 6);
-lineIndices0.push(6, 7);
-lineIndices0.push(3, 4);
+
+// Front vertices
+const LEFT_EDGE_X = -80;
+const RIGHT_EDGE_X = 80;
+const TOP_EDGE_Y = 128;
+const BOTTOM_EDGE_Y = -128;
+const FRONT_EDGE_Z = 110.5;
+const BACK_EDGE_Z = -110.5;
+
+// Vertices
+const volumeVertices = [];
+volumeVertices.push(new THREE.Vector3(RIGHT_EDGE_X, TOP_EDGE_Y, FRONT_EDGE_Z));
+volumeVertices.push(new THREE.Vector3(RIGHT_EDGE_X, TOP_EDGE_Y, BACK_EDGE_Z));
+volumeVertices.push(new THREE.Vector3(RIGHT_EDGE_X, BOTTOM_EDGE_Y, FRONT_EDGE_Z));
+volumeVertices.push(new THREE.Vector3(LEFT_EDGE_X, TOP_EDGE_Y, FRONT_EDGE_Z));
+
+volumeVertices.push(new THREE.Vector3(LEFT_EDGE_X, TOP_EDGE_Y, BACK_EDGE_Z));
+volumeVertices.push(new THREE.Vector3(RIGHT_EDGE_X, BOTTOM_EDGE_Y, BACK_EDGE_Z));
+volumeVertices.push(new THREE.Vector3(LEFT_EDGE_X, BOTTOM_EDGE_Y, FRONT_EDGE_Z));
+volumeVertices.push(new THREE.Vector3(LEFT_EDGE_X, BOTTOM_EDGE_Y, BACK_EDGE_Z));
 
 class MedicalViz extends BaseApp {
     constructor() {
@@ -65,7 +71,7 @@ class MedicalViz extends BaseApp {
         this.renderUpdate = false;
 
         // Volume attributes
-        this.currentLineIndices;
+        this.currentLineIndices = lineIndices0;
         this.planeNormal = new THREE.Vector3();
         this.viewingDir = new THREE.Line3();
         this.offset = new THREE.Vector3();
@@ -75,7 +81,8 @@ class MedicalViz extends BaseApp {
         this.renderOveride = false;
 
         //Temp variables
-        this.tempVec = new THREE.Vector3();
+        this.tempVec1 = new THREE.Vector3();
+        this.tempVec2 = new THREE.Vector3();
     }
 
     init() {
@@ -117,43 +124,36 @@ class MedicalViz extends BaseApp {
         cube.position.z = -50;
         //this.scene.add(cube);
 
-        // Front vertices
-        const LEFT_EDGE_X = -80;
-        const RIGHT_EDGE_X = 80;
-        const TOP_EDGE_Y = 128;
-        const BOTTOM_EDGE_Y = -128;
-        const FRONT_EDGE_Z = 110.5;
-        const BACK_EDGE_Z = -110.5;
-
-        // Vertices
-        const volumeVertices = [];
-        volumeVertices.push(new THREE.Vector3(RIGHT_EDGE_X, TOP_EDGE_Y, FRONT_EDGE_Z));
-        volumeVertices.push(new THREE.Vector3(RIGHT_EDGE_X, TOP_EDGE_Y, BACK_EDGE_Z));
-        volumeVertices.push(new THREE.Vector3(RIGHT_EDGE_X, BOTTOM_EDGE_Y, FRONT_EDGE_Z));
-        volumeVertices.push(new THREE.Vector3(LEFT_EDGE_X, TOP_EDGE_Y, FRONT_EDGE_Z));
-
-        volumeVertices.push(new THREE.Vector3(LEFT_EDGE_X, TOP_EDGE_Y, BACK_EDGE_Z));
-        volumeVertices.push(new THREE.Vector3(RIGHT_EDGE_X, BOTTOM_EDGE_Y, BACK_EDGE_Z));
-        volumeVertices.push(new THREE.Vector3(LEFT_EDGE_X, BOTTOM_EDGE_Y, FRONT_EDGE_Z));
-        volumeVertices.push(new THREE.Vector3(LEFT_EDGE_X, BOTTOM_EDGE_Y, BACK_EDGE_Z));
-
         let volumeLines = [];
-        volumeLines.push(new THREE.Line3(volumeVertices[0], volumeVertices[1]));
-        volumeLines.push(new THREE.Line3(volumeVertices[1], volumeVertices[4]));
-        volumeLines.push(new THREE.Line3(volumeVertices[4], volumeVertices[7]));
-        volumeLines.push(new THREE.Line3(volumeVertices[1], volumeVertices[5]));
+        
+        volumeLines.push(new THREE.Line3());
+        volumeLines[0].set(volumeVertices[0], volumeVertices[1]);
+        volumeLines.push(new THREE.Line3());
+        volumeLines[1].set(volumeVertices[1], volumeVertices[4]);
+        volumeLines.push(new THREE.Line3());
+        volumeLines[2].set(volumeVertices[4], volumeVertices[7]);
+        volumeLines.push(new THREE.Line3());
+        volumeLines[3].set(volumeVertices[1], volumeVertices[5]);
 
-        volumeLines.push(new THREE.Line3(volumeVertices[0], volumeVertices[2]));
-        volumeLines.push(new THREE.Line3(volumeVertices[2], volumeVertices[5]));
-        volumeLines.push(new THREE.Line3(volumeVertices[5], volumeVertices[7]));
-        volumeLines.push(new THREE.Line3(volumeVertices[2], volumeVertices[6]));
+        volumeLines.push(new THREE.Line3());
+        volumeLines[4].set(volumeVertices[0], volumeVertices[2]);
+        volumeLines.push(new THREE.Line3());
+        volumeLines[5].set(volumeVertices[2], volumeVertices[5]);
+        volumeLines.push(new THREE.Line3());
+        volumeLines[6].set(volumeVertices[5], volumeVertices[7]);
+        volumeLines.push(new THREE.Line3());
+        volumeLines[7].set(volumeVertices[2], volumeVertices[6]);
 
-        volumeLines.push(new THREE.Line3(volumeVertices[0], volumeVertices[3]));
-        volumeLines.push(new THREE.Line3(volumeVertices[3], volumeVertices[6]));
-        volumeLines.push(new THREE.Line3(volumeVertices[6], volumeVertices[7]));
-        volumeLines.push(new THREE.Line3(volumeVertices[3], volumeVertices[4]));
+        volumeLines.push(new THREE.Line3());
+        volumeLines[8].set(volumeVertices[0], volumeVertices[3]);
+        volumeLines.push(new THREE.Line3());
+        volumeLines[9].set(volumeVertices[3], volumeVertices[6]);
+        volumeLines.push(new THREE.Line3());
+        volumeLines[10].set(volumeVertices[6], volumeVertices[7]);
+        volumeLines.push(new THREE.Line3());
+        volumeLines[11].set(volumeVertices[3], volumeVertices[4]);
 
-        this.volumeVertices = volumeVertices;
+        //this.volumeVertices = volumeVertices;
         this.volumeLines = volumeLines;
 
         // Load medical image data
@@ -212,12 +212,12 @@ class MedicalViz extends BaseApp {
         this.planeNormal.normalize();
 
         // Plane offset
-        let nearest = this.getClosestVertex(this.volumeVertices, this.camera.position);
+        let nearest = this.getClosestVertex(volumeVertices, this.camera.position);
         // DEBUG
         $("#nearestValue").html(nearest);
 
         this.viewingDir.set(this.controls.target, this.camera.position);
-        this.viewingDir.closestPointToPoint(this.volumeVertices[nearest], false, this.offset);
+        this.viewingDir.closestPointToPoint(volumeVertices[nearest], false, this.offset);
 
         // Viewing plane
         this.viewingPlane.position.copy(this.offset);
@@ -280,39 +280,18 @@ class MedicalViz extends BaseApp {
                 break;
 
             case 1:
-                this.lineIndices.push(1, 4);
-                this.lineIndices.push(4, 3);
-                this.lineIndices.push(3, 6);
-                this.lineIndices.push(4, 7);
-                this.lineIndices.push(1, 5);
-                this.lineIndices.push(5, 7);
-                this.lineIndices.push(7, 6);
-                this.lineIndices.push(5, 2);
-                this.lineIndices.push(1, 0);
-                this.lineIndices.push(0, 2);
-                this.lineIndices.push(2, 6);
-                this.lineIndices.push(0, 3);
+                this.currentLineIndices = lineIndices1;
                 break;
 
             case 2:
                 break;
 
             case 3:
-                this.lineIndices.push(3, 0);
-                this.lineIndices.push(0, 1);
-                this.lineIndices.push(1, 5);
-                this.lineIndices.push(0, 2);
-                this.lineIndices.push(3, 6);
-                this.lineIndices.push(6, 2);
-                this.lineIndices.push(2, 5);
-                this.lineIndices.push(6, 7);
-                this.lineIndices.push(3, 4);
-                this.lineIndices.push(4, 7);
-                this.lineIndices.push(7, 5);
-                this.lineIndices.push(4, 1);
+                this.currentLineIndices = lineIndices3;
                 break;
 
             case 4:
+                this.currentLineIndices = lineIndices4;
                 break;
 
             case 5:
@@ -335,7 +314,7 @@ class MedicalViz extends BaseApp {
         for (let i=0, numSegs=this.currentLineIndices.length/2; i<numSegs; ++i) {
             currentStart = this.currentLineIndices[currentIndex];
             currentEnd = this.currentLineIndices[currentIndex + 1];
-            this.volumeLines[i].set(this.volumeVertices[currentStart], this.volumeVertices[currentEnd]);
+            this.volumeLines[i].set(volumeVertices[currentStart], volumeVertices[currentEnd]);
             currentIndex += 2;
         }
 
