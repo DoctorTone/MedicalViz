@@ -185,7 +185,7 @@ export class BaseApp {
         const controlsDisabled = false;
         this.controls.noRotate = controlsDisabled;
 	    this.controls.noZoom = controlsDisabled;
-        this.controls.noPan = controlsDisabled;
+        this.controls.noPan = true;
         
         this.controls.keys = [ 65, 83, 68 ];
 
