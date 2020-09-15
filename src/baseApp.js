@@ -191,13 +191,6 @@ export class BaseApp {
 
         let lookAt = new THREE.Vector3(SceneConfig.LookAtPos.x, SceneConfig.LookAtPos.y, SceneConfig.LookAtPos.z);
         this.controls.target.copy(lookAt);
-
-        // DEBUG
-        /*
-        this.controls.addEventListener("change", () => {
-            this.renderUpdate = true;
-        });
-        */
     }
 
     setCamera(mode) {
@@ -214,10 +207,7 @@ export class BaseApp {
     run() {
         this.update();
         if (this.renderUpdate) {
-            if (!this.renderOveride) {
-                this.renderVolume();
-            }
-            
+            this.renderVolume();
             this.renderer.render( this.scene, this.camera );
             this.renderUpdate = false;
         }
