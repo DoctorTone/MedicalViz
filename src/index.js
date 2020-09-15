@@ -208,7 +208,7 @@ class MedicalViz extends BaseApp {
         this.scene.add(this.root);
 
         this.planeInc = PLANE_INC * this.sliceScale;
-        
+
         // Set up plane
         // Plane normal
         this.planeNormal.copy(this.camera.position);
@@ -217,8 +217,6 @@ class MedicalViz extends BaseApp {
 
         // Plane offset
         let nearest = this.getClosestVertex(volumeVertices, this.camera.position);
-        // DEBUG
-        $("#nearestValue").html(nearest);
 
         this.viewingDir.set(this.controls.target, this.camera.position);
         this.viewingDir.closestPointToPoint(volumeVertices[nearest], false, this.offset);
@@ -232,6 +230,9 @@ class MedicalViz extends BaseApp {
 
         this.planeOffset = this.offset.sub(this.controls.target).length();
         this.numSlices = Math.round(this.planeOffset / this.planeInc) * 2;
+        // DEBUG
+        $("#numSlices").html(this.numSlices);
+
         //uniforms.u_slices.value.z = numSlices;
         this.planeOffset *= -1;
         // Prevent co=planar issues
