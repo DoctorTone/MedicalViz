@@ -4,7 +4,7 @@ import * as THREE from "three";
 let TrackballControls = require("three-trackballcontrols");
 
 import { BaseApp } from "./baseApp";
-import { APPCONFIG, lineIndices0, lineIndices1, lineIndices3, lineIndices4 } from "./appConfig";
+import { APPCONFIG, lineIndices0, lineIndices1, lineIndices3, lineIndices4, lineIndices2 } from "./appConfig";
 import { NRRDLoader } from "./NRRDLoader";
 
 import "./main.css";
@@ -284,6 +284,7 @@ class MedicalViz extends BaseApp {
                 break;
 
             case 2:
+                this.currentLineIndices = lineIndices2;
                 break;
 
             case 3:

@@ -47,6 +47,20 @@ lineIndices1.push(0, 2);
 lineIndices1.push(2, 6);
 lineIndices1.push(0, 3);
 
+const lineIndices2 = [];
+lineIndices2.push(2, 6);
+lineIndices2.push(6, 7);
+lineIndices2.push(7, 4);
+lineIndices2.push(6, 3);
+lineIndices2.push(2, 0);
+lineIndices2.push(0, 3);
+lineIndices2.push(3, 4);
+lineIndices2.push(0, 1);
+lineIndices2.push(2, 5);
+lineIndices2.push(5, 1);
+lineIndices2.push(1, 4);
+lineIndices2.push(5, 7);
+
 const lineIndices3 = [];
 lineIndices3.push(3, 0);
 lineIndices3.push(0, 1);
@@ -75,4 +89,4 @@ lineIndices4.push(1, 5);
 lineIndices4.push(5, 2);
 lineIndices4.push(1, 0);
 
-export { APPCONFIG, lineIndices0, lineIndices1, lineIndices3, lineIndices4 };
+export { APPCONFIG, lineIndices0, lineIndices1, lineIndices3, lineIndices4, lineIndices2 };
