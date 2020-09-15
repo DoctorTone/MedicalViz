@@ -17,3 +17,9 @@ body {
 	top: 1%;
 	left: 1%;
 }
+
+#alphaThreshold {
+	top: 1%;
+	right: 1%;
+	width: 15%;
+}

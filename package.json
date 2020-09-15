@@ -27,7 +27,9 @@
     "webpack-dev-server": "^3.11.0"
   },
   "dependencies": {
+    "bootstrap": "^4.5.2",
     "jquery": "^3.5.1",
+    "popper.js": "^1.16.1",
     "three": "^0.120.1",
     "three-trackballcontrols": "0.0.8"
   }

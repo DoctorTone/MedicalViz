@@ -4,9 +4,11 @@ import * as THREE from "three";
 let TrackballControls = require("three-trackballcontrols");
 
 import { BaseApp } from "./baseApp";
+import "bootstrap";
 import { APPCONFIG, lineIndices0, lineIndices1, lineIndices3, lineIndices4, lineIndices2, lineIndices5, lineIndices6, lineIndices7 } from "./appConfig";
 import { NRRDLoader } from "./NRRDLoader";
 
+import "bootstrap/dist/css/bootstrap.min.css";
 import "./main.css";
 
 // Shaders
@@ -172,7 +174,7 @@ class MedicalViz extends BaseApp {
             uniforms.u_data.value = texture3D;
 
             this.renderUpdate = true;
-        })
+        });
     }
 
     update() {
