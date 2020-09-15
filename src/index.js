@@ -27,11 +27,12 @@ const fshader = `
     varying vec4 texPosition;
     uniform vec3 u_slices;
     uniform sampler3D u_data;
+    uniform float u_thresh;
 
     void main() {
         vec3 texCoords = vec3((texPosition.x/u_slices.x) + 0.5, (texPosition.y/u_slices.y) + 0.5, (texPosition.z/u_slices.z) + 0.5);
         gl_FragColor = texture(u_data, texCoords);
-        if (gl_FragColor.r < 0.1) {
+        if (gl_FragColor.r < u_thresh) {
             discard;
         }
         gl_FragColor.b = gl_FragColor.g = gl_FragColor.r;
@@ -60,6 +61,12 @@ volumeVertices.push(new THREE.Vector3(LEFT_EDGE_X, TOP_EDGE_Y, BACK_EDGE_Z));
 volumeVertices.push(new THREE.Vector3(RIGHT_EDGE_X, BOTTOM_EDGE_Y, BACK_EDGE_Z));
 volumeVertices.push(new THREE.Vector3(LEFT_EDGE_X, BOTTOM_EDGE_Y, FRONT_EDGE_Z));
 volumeVertices.push(new THREE.Vector3(LEFT_EDGE_X, BOTTOM_EDGE_Y, BACK_EDGE_Z));
+
+const uniforms = {
+    u_data: { value: null },
+    u_slices: { value: new THREE.Vector3(160, 256, 221)},
+    u_thresh: { value: $("#alphaRange").val() / 255.0 }
+};
 
 class MedicalViz extends BaseApp {
     constructor() {
@@ -100,11 +107,6 @@ class MedicalViz extends BaseApp {
         // Create root object.
         this.root = new THREE.Object3D();
         this.scene.add(this.root);
-
-        const uniforms = {
-            u_data: { value: null },
-            u_slices: { value: new THREE.Vector3(160, 256, 221)}
-        }
 
         // Shader material
         this.volumeShader = new THREE.ShaderMaterial({
@@ -203,6 +205,10 @@ class MedicalViz extends BaseApp {
         super.update();
     }
 
+    updateVolume() {
+        this.renderUpdate = true;
+    }
+
     renderVolume() {
         // Remove existing geometry
         this.scene.remove(this.root);
@@ -232,8 +238,10 @@ class MedicalViz extends BaseApp {
 
         this.planeOffset = this.offset.sub(this.controls.target).length();
         this.numSlices = Math.round(this.planeOffset / this.planeInc) * 2;
-        // DEBUG
+        // Show number of slices
         $("#numSlices").html(this.numSlices);
+
+        uniforms.u_thresh.value = $("#alphaRange").val() / 255.0;
 
         //uniforms.u_slices.value.z = numSlices;
         this.planeOffset *= -1;
@@ -432,6 +440,10 @@ $(document).ready( () => {
 
     app.init();
     app.createScene();
+
+    $("#alphaRange").on("change", function() {
+        app.updateVolume();
+    });
 
     app.run();
 });
