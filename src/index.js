@@ -28,6 +28,7 @@ const fshader = `
     uniform vec3 u_slices;
     uniform sampler3D u_data;
     uniform float u_thresh;
+    uniform float u_alphaScale;
 
     void main() {
         vec3 texCoords = vec3((texPosition.x/u_slices.x) + 0.5, (texPosition.y/u_slices.y) + 0.5, (texPosition.z/u_slices.z) + 0.5);
@@ -37,6 +38,7 @@ const fshader = `
         }
         gl_FragColor.b = gl_FragColor.g = gl_FragColor.r;
         gl_FragColor.a = gl_FragColor.r;
+        gl_FragColor.a *= u_alphaScale;
     }
 `
 
@@ -65,7 +67,8 @@ volumeVertices.push(new THREE.Vector3(LEFT_EDGE_X, BOTTOM_EDGE_Y, BACK_EDGE_Z));
 const uniforms = {
     u_data: { value: null },
     u_slices: { value: new THREE.Vector3(160, 256, 221)},
-    u_thresh: { value: $("#alphaRange").val() / 255.0 }
+    u_thresh: { value: $("#alphaRange").val() / 255.0 },
+    u_alphaScale: { value: $("#alphaScale").val() }
 };
 
 class MedicalViz extends BaseApp {
@@ -242,6 +245,7 @@ class MedicalViz extends BaseApp {
         $("#numSlices").html(this.numSlices);
 
         uniforms.u_thresh.value = $("#alphaRange").val() / 255.0;
+        uniforms.u_alphaScale.value = $("#alphaScale").val();
 
         //uniforms.u_slices.value.z = numSlices;
         this.planeOffset *= -1;
@@ -441,7 +445,11 @@ $(document).ready( () => {
     app.init();
     app.createScene();
 
-    $("#alphaRange").on("change", function() {
+    $("#alphaRange").on("change", () => {
+        app.updateVolume();
+    });
+
+    $("#alphaScale").on("change", () => {
         app.updateVolume();
     });
 

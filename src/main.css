@@ -8,18 +8,20 @@ body {
     overscroll-behavior: none;
     overflow: hidden;
 }
-
 .panel {
 	position: absolute;
 }
-
 #slices {
 	top: 1%;
 	left: 1%;
 }
-
 #alphaThreshold {
 	top: 5%;
+	right: 1%;
+	width: 15%;
+}
+#alphaValue {
+	top: 12.5%;
 	right: 1%;
 	width: 15%;
 }
