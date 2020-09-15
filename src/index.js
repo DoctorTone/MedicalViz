@@ -76,9 +76,11 @@ class MedicalViz extends BaseApp {
         this.viewingDir = new THREE.Line3();
         this.offset = new THREE.Vector3();
         this.planeOffset;
-        this.startSlice = 1;
+        this.startSlice = 0;
         this.intersectPlane = new THREE.Plane();
         this.renderOveride = false;
+        this.sliceScale = 1;
+        this.planeInc = PLANE_INC * this.sliceScale;
 
         //Temp variables
         this.tempVec1 = new THREE.Vector3();
@@ -205,6 +207,8 @@ class MedicalViz extends BaseApp {
         this.root = new THREE.Object3D();
         this.scene.add(this.root);
 
+        this.planeInc = PLANE_INC * this.sliceScale;
+        
         // Set up plane
         // Plane normal
         this.planeNormal.copy(this.camera.position);
@@ -227,11 +231,11 @@ class MedicalViz extends BaseApp {
         //console.log("Offset = ", offset);
 
         this.planeOffset = this.offset.sub(this.controls.target).length();
-        this.numSlices = Math.round(this.planeOffset / PLANE_INC) * 2;
+        this.numSlices = Math.round(this.planeOffset / this.planeInc) * 2;
         //uniforms.u_slices.value.z = numSlices;
         this.planeOffset *= -1;
         // Prevent co=planar issues
-        this.planeOffset += (PLANE_INC * this.startSlice);
+        //this.planeOffset += (PLANE_INC * this.startSlice);
         //planeOffset += planeInc;
         this.intersectPlane.set(this.planeNormal, this.planeOffset);
 
@@ -246,7 +250,7 @@ class MedicalViz extends BaseApp {
                 currentGeometry.vertices.push(new THREE.Vector3().copy(intersectionPoints[i]));
             }
             // Advance plane
-            this.planeOffset += PLANE_INC;
+            this.planeOffset += this.planeInc;
             this.intersectPlane.set(this.planeNormal, this.planeOffset);
 
             // Viewing plane

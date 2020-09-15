@@ -54,7 +54,15 @@ export class BaseApp {
             this.windowResize(event);
         }, false);
 
-        document.addEventListener("mousemove", event => {
+        this.renderer.domElement.addEventListener("mousedown", event => {
+            this.mouseClicked(event);
+        }, false);
+
+        this.renderer.domElement.addEventListener("mouseup", event => {
+            this.mouseUp(event);
+        }, false);
+
+        this.renderer.domElement.addEventListener("mousemove", event => {
             this.mouseMoved(event);
         }, false);
     }
@@ -77,48 +85,32 @@ export class BaseApp {
                 console.log('Cam =', this.camera.position);
                 console.log('Look =', this.controls.target);
                 break;
-
-            case "l":
-                this.renderOveride = true;
-                console.log("Locked");
-                break;
-
-            case "u":
-                this.renderOveride = false;
-                console.log("Unlocked");
-                break;
         }
     }
 
     mouseClicked(event) {
         //Update mouse state
         event.preventDefault();
-        this.pickedObjects.length = 0;
-
-        if(event.type === 'mouseup') {
-            this.mouse.endX = event.clientX;
-            this.mouse.endY = event.clientY;
-            this.mouse.down = false;
-            this.objectsPicked = false;
-            return;
-        }
-        this.mouse.set((event.clientX / window.innerWidth) * 2 - 1,
-            -(event.clientY / window.innerHeight) * 2 + 1);
+        
         this.mouse.down = true;
-        this.raycaster.setFromCamera(this.mouse, this.camera);
-        let intersects = this.raycaster.intersectObjects( this.scene.children, true );
-        if(intersects.length > 0) {
-            this.selectedObject = intersects[0].object;
-            //DEBUG
-            console.log("Picked = ", this.selectedObject);
-        }
+    }
+
+    mouseUp(event) {
+        event.preventDefault();
+
+        this.sliceScale = 1;
+        this.renderUpdate = true;
+        this.mouse.down = false;
     }
 
     mouseMoved(event) {
         //Update mouse state
         event.preventDefault();
-        this.mouse.x = ( event.clientX / window.innerWidth ) * 2 - 1;
-        this.mouse.y = - ( event.clientY / window.innerHeight ) * 2 + 1;
+        
+        if (this.mouse.down) {
+            this.sliceScale = 4;
+            this.renderUpdate = true;
+        }
     }
 
     windowResize(event) {
@@ -200,9 +192,12 @@ export class BaseApp {
         let lookAt = new THREE.Vector3(SceneConfig.LookAtPos.x, SceneConfig.LookAtPos.y, SceneConfig.LookAtPos.z);
         this.controls.target.copy(lookAt);
 
+        // DEBUG
+        /*
         this.controls.addEventListener("change", () => {
             this.renderUpdate = true;
         });
+        */
     }
 
     setCamera(mode) {
