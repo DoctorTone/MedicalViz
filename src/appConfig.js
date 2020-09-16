@@ -16,6 +16,8 @@ const APPCONFIG = {
     LEFT: 0,
     UP: 2,
     DOWN: 3,
+    BACK: 4,
+    FORWARD: 5,
     ZOOM_SPEED: 0.1,
     PLANE_SIZE: 250,
     PLANE_START_X: 100,
