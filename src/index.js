@@ -58,6 +58,8 @@ const BACK_EDGE_Z = -110.5;
 
 const DIR_LEFT = new THREE.Vector3(-1, 0, 0);
 const DIR_RIGHT = new THREE.Vector3(1, 0, 0);
+const DIR_DOWN = new THREE.Vector3(0, 0, -1);
+const DIR_UP = new THREE.Vector3(0, 0, 1);
 
 // Vertices
 const volumeVertices = [];
@@ -477,6 +479,14 @@ class MedicalViz extends BaseApp {
                 this.cubeDirection = DIR_RIGHT;
                 break;
 
+            case APPCONFIG.DOWN:
+                this.cubeDirection = DIR_DOWN;
+                break;
+
+            case APPCONFIG.UP:
+                this.cubeDirection = DIR_UP;
+                break;
+
             default:
                 break;
         }
@@ -507,6 +517,8 @@ $(document).ready( () => {
     // Move elements
     let moveCubeLeft = $("#moveCubeLeft");
     let moveCubeRight = $("#moveCubeRight");
+    let moveCubeDown = $("#moveCubeDown");
+    let moveCubeUp = $("#moveCubeUp");
 
     moveCubeLeft.on("mousedown", () => {
         app.moveClipCube(true, APPCONFIG.LEFT);
@@ -521,6 +533,22 @@ $(document).ready( () => {
     });
 
     moveCubeRight.on("mouseup", () => {
+        app.moveClipCube(false);
+    });
+
+    moveCubeDown.on("mousedown", () => {
+        app.moveClipCube(true, APPCONFIG.DOWN);
+    });
+
+    moveCubeDown.on("mouseup", () => {
+        app.moveClipCube(false);
+    });
+
+    moveCubeUp.on("mousedown", () => {
+        app.moveClipCube(true, APPCONFIG.UP);
+    });
+
+    moveCubeUp.on("mouseup", () => {
         app.moveClipCube(false);
     });
 
