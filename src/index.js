@@ -32,6 +32,10 @@ const fshader = `
 
     void main() {
         vec3 texCoords = vec3((texPosition.x/u_slices.x) + 0.5, (texPosition.y/u_slices.y) + 0.5, (texPosition.z/u_slices.z) + 0.5);
+        if (texPosition.x > 0.0) {
+            discard;
+        }
+
         gl_FragColor = texture(u_data, texCoords);
         if (gl_FragColor.r < u_thresh) {
             discard;
@@ -168,12 +172,19 @@ class MedicalViz extends BaseApp {
             this.renderUpdate = true;
         });
 
+        // Add reference cube
         let cubeMat = new THREE.LineBasicMaterial( { color: 0xff0000 });
         let cubeGeom = this.createCubeSegments(APPCONFIG.CUBE_WIDTH);
         let cube = new THREE.LineSegments( cubeGeom, cubeMat );
         cube.computeLineDistances();
-        cube.position.set(-100, 0, 0);
+        cube.position.set(0, 0, 0);
         this.scene.add( cube );
+
+        // Add global clipping plane
+        let clipPlane = new THREE.Plane( new THREE.Vector3(-1, 0, 0), 0);
+        this.renderer.localClippingEnabled = false;
+        let globalPlanes = [ clipPlane ];
+        this.renderer.clippingPlanes = globalPlanes;
     }
 
     createCubeSegments(width) {
