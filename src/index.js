@@ -172,24 +172,36 @@ class MedicalViz extends BaseApp {
         });
 
         let cubeMat = new THREE.LineBasicMaterial( { color: 0xff0000 });
-        let cubePoints = this.createCubePoints(APPCONFIG.CUBE_WIDTH);
-        let cubeGeom = new THREE.BufferGeometry().setFromPoints( cubePoints );
-        let cube = new THREE.Line( cubeGeom, cubeMat );
+        let cubeGeom = this.createCubeSegments(APPCONFIG.CUBE_WIDTH);
+        let cube = new THREE.LineSegments( cubeGeom, cubeMat );
+        cube.computeLineDistances();
         this.root.add( cube );
     }
 
-    createCubePoints(width) {
-        let points = [];
-        points.push( new THREE.Vector3( -width/2, width/2, width/2 ));
-        points.push( new THREE.Vector3( -width/2, width/2, -width/2 ));
-        points.push( new THREE.Vector3( width/2, width/2, -width/2 ));
-        points.push( new THREE.Vector3( width/2, width/2, width/2 ));
-        points.push( new THREE.Vector3( -width/2, -width/2, -width/2 ));
-        points.push( new THREE.Vector3( -width/2, -width/2, -width/2 ));
-        points.push( new THREE.Vector3( width/2, -width/2, -width/2 ));
-        points.push( new THREE.Vector3( width/2, -width/2, width/2 ));
+    createCubeSegments(width) {
+        let cubeGeom = new THREE.BufferGeometry();
+        let position = [];
+        // Top
+        position.push( width/2, width/2, width/2, -width/2, width/2, width/2);
+        position.push( -width/2, width/2, width/2, -width/2, width/2, -width/2);
+        position.push( -width/2, width/2, -width/2, width/2, width/2, -width/2);
+        position.push( width/2, width/2, -width/2, width/2, width/2, width/2);
 
-        return points;
+        // Middle
+        position.push( width/2, width/2, width/2, width/2, -width/2, width/2);
+        position.push( -width/2, width/2, width/2, -width/2, -width/2, width/2);
+        position.push( -width/2, width/2, -width/2, -width/2, -width/2, -width/2);
+        position.push( width/2, width/2, -width/2, width/2, -width/2, -width/2);
+
+        // Bottom
+        position.push( width/2, -width/2, width/2, -width/2, -width/2, width/2);
+        position.push( -width/2, -width/2, width/2, -width/2, -width/2, -width/2);
+        position.push( -width/2, -width/2, -width/2, width/2, -width/2, -width/2);
+        position.push( width/2, -width/2, -width/2, width/2, -width/2, width/2);
+
+        cubeGeom.setAttribute("position", new THREE.Float32BufferAttribute( position, 3));
+
+        return cubeGeom;
     }
 
     update() {
