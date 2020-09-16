@@ -178,13 +178,28 @@ class MedicalViz extends BaseApp {
         let cube = new THREE.LineSegments( cubeGeom, cubeMat );
         cube.computeLineDistances();
         cube.position.set(0, 0, 0);
-        this.scene.add( cube );
+        //this.scene.add( cube );
+
+        // Clip plane representation
+        let clipPlaneGeom = new THREE.PlaneBufferGeometry(APPCONFIG.PLANE_SIZE, APPCONFIG.PLANE_SIZE);
+        let clipPlaneMat = new THREE.MeshLambertMaterial({
+            color: 0xffffff,
+            side: THREE.DoubleSide,
+            transparent: true,
+            opacity: 0.25
+        });
+        let clipPlane = new THREE.Mesh(clipPlaneGeom, clipPlaneMat);
+        clipPlane.rotation.y = Math.PI/2;
+        clipPlane.renderOrder = 1000;
+        this.scene.add(clipPlane);
 
         // Add global clipping plane
+        /*
         let clipPlane = new THREE.Plane( new THREE.Vector3(-1, 0, 0), 0);
         this.renderer.localClippingEnabled = false;
         let globalPlanes = [ clipPlane ];
         this.renderer.clippingPlanes = globalPlanes;
+        */
     }
 
     createCubeSegments(width) {
