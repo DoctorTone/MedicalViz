@@ -32,10 +32,6 @@ const fshader = `
 
     void main() {
         vec3 texCoords = vec3((texPosition.x/u_slices.x) + 0.5, (texPosition.y/u_slices.y) + 0.5, (texPosition.z/u_slices.z) + 0.5);
-        if (texPosition.x > 0.0) {
-            discard;
-        }
-
         gl_FragColor = texture(u_data, texCoords);
         if (gl_FragColor.r < u_thresh) {
             discard;
@@ -189,6 +185,7 @@ class MedicalViz extends BaseApp {
             opacity: 0.25
         });
         let clipPlane = new THREE.Mesh(clipPlaneGeom, clipPlaneMat);
+        clipPlane.position.x = APPCONFIG.PLANE_START_X;
         clipPlane.rotation.y = Math.PI/2;
         clipPlane.renderOrder = 1000;
         this.scene.add(clipPlane);

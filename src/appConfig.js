@@ -14,7 +14,8 @@ const APPCONFIG = {
     UP: 2,
     DOWN: 3,
     ZOOM_SPEED: 0.1,
-    PLANE_SIZE: 250
+    PLANE_SIZE: 250,
+    PLANE_START_X: 100
 }
 
 // Line indices
