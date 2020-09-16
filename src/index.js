@@ -526,6 +526,10 @@ class MedicalViz extends BaseApp {
         this.cubeMoving = status;
     }
 
+    toggleClipCube() {
+        this.clipCube.visible = !this.clipCube.visible;
+    }
+
     clipVolume() {
         this.clipCube.geometry.computeBoundingBox();
         uniforms.u_clipCubeMax.value.addVectors(this.clipCube.geometry.boundingBox.max, this.clipCube.position);
@@ -563,6 +567,7 @@ $(document).ready( () => {
     let moveCubeBack = $("#moveCubeBack");
     let moveCubeForward = $("#moveCubeForward");
     let clipVolume = $("#clipVolume");
+    let toggleClipCube = $("#toggleClipCube");
 
     moveCubeLeft.on("mousedown", () => {
         app.moveClipCube(true, APPCONFIG.LEFT);
@@ -614,6 +619,10 @@ $(document).ready( () => {
 
     clipVolume.on("click", () => {
         app.clipVolume();
+    });
+
+    toggleClipCube.on("click", () => {
+        app.toggleClipCube();
     });
 
     app.run();
