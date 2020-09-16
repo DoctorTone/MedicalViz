@@ -39,9 +39,6 @@ const fshader = `
         gl_FragColor.b = gl_FragColor.g = gl_FragColor.r;
         gl_FragColor.a = gl_FragColor.r;
         gl_FragColor.a *= u_alphaScale;
-        if (gl_FragColor.r > 0.75) {
-            gl_FragColor.g = gl_FragColor.b = 0.0;
-        }
     }
 `
 
@@ -175,7 +172,8 @@ class MedicalViz extends BaseApp {
         let cubeGeom = this.createCubeSegments(APPCONFIG.CUBE_WIDTH);
         let cube = new THREE.LineSegments( cubeGeom, cubeMat );
         cube.computeLineDistances();
-        this.root.add( cube );
+        cube.position.set(-100, 0, 0);
+        this.scene.add( cube );
     }
 
     createCubeSegments(width) {
@@ -199,33 +197,13 @@ class MedicalViz extends BaseApp {
         position.push( -width/2, -width/2, -width/2, width/2, -width/2, -width/2);
         position.push( width/2, -width/2, -width/2, width/2, -width/2, width/2);
 
-        cubeGeom.setAttribute("position", new THREE.Float32BufferAttribute( position, 3));
+        cubeGeom.setAttribute("position", new THREE.Float32BufferAttribute( position, 3 ));
 
         return cubeGeom;
     }
 
     update() {
         let delta = this.clock.getDelta();
-
-        if (this.cameraRotate) {
-            this.root.rotation[this.rotAxis] += (this.rotSpeed * this.rotDirection * delta);
-        }
-
-        if(this.zoomingIn) {
-            this.tempVec.copy(this.camera.position);
-            this.tempVec.multiplyScalar(this.zoomSpeed * delta);
-            this.root.position.add(this.tempVec);
-            //DEBUG
-            //console.log("Root = ", this.root.position);
-        }
-
-        if(this.zoomingOut) {
-            this.tempVec.copy(this.camera.position);
-            this.tempVec.multiplyScalar(this.zoomSpeed * delta);
-            this.root.position.sub(this.tempVec);
-            //DEBUG
-            //console.log("Root = ", this.root.position);
-        }
 
         super.update();
     }
@@ -235,7 +213,6 @@ class MedicalViz extends BaseApp {
     }
 
     renderVolume() {
-        return;
         // Remove existing geometry
         this.scene.remove(this.root);
         this.root = new THREE.Object3D();
