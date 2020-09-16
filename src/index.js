@@ -30,11 +30,20 @@ const fshader = `
     uniform float u_thresh;
     uniform float u_alphaScale;
     uniform float u_clipPlaneX;
+    uniform vec3 u_clipCubeMax;
+    uniform vec3 u_clipCubeMin;
 
     void main() {
-        if (texPosition.x >= u_clipPlaneX) {
+        if (texPosition.x > u_clipCubeMax.x || texPosition.x < u_clipCubeMin.x) {
             discard;
         }
+        if (texPosition.y > u_clipCubeMax.y || texPosition.y < u_clipCubeMin.y) {
+            discard;
+        }
+        if (texPosition.z > u_clipCubeMax.z || texPosition.z < u_clipCubeMin.z) {
+            discard;
+        }
+
         vec3 texCoords = vec3((texPosition.x/u_slices.x) + 0.5, (texPosition.y/u_slices.y) + 0.5, (texPosition.z/u_slices.z) + 0.5);
         gl_FragColor = texture(u_data, texCoords);
         if (gl_FragColor.r < u_thresh) {
@@ -80,7 +89,9 @@ const uniforms = {
     u_slices: { value: new THREE.Vector3(160, 256, 221)},
     u_thresh: { value: $("#alphaRange").val() / 255.0 },
     u_alphaScale: { value: $("#alphaScale").val() },
-    u_clipPlaneX: { value: $("#clipPlaneXValue").val() }
+    u_clipPlaneX: { value: $("#clipPlaneXValue").val() },
+    u_clipCubeMax: { value: new THREE.Vector3()},
+    u_clipCubeMin: { value: new THREE.Vector3()}
 };
 
 class MedicalViz extends BaseApp {
@@ -189,6 +200,12 @@ class MedicalViz extends BaseApp {
         let cube = new THREE.LineSegments( cubeGeom, cubeMat );
         cube.computeLineDistances();
         cube.position.set(APPCONFIG.CUBE_START_X, APPCONFIG.CUBE_START_Y, APPCONFIG.CUBE_START_Z);
+
+        // Set up clip cube
+        cube.geometry.computeBoundingBox();
+        uniforms.u_clipCubeMax.value = cube.geometry.boundingBox.max;
+        uniforms.u_clipCubeMin.value = cube.geometry.boundingBox.min;
+        
         this.scene.add( cube );
         this.clipCube = cube;
 
@@ -503,6 +520,15 @@ class MedicalViz extends BaseApp {
 
         this.cubeMoving = status;
     }
+
+    clipVolume() {
+        this.clipCube.geometry.computeBoundingBox();
+        uniforms.u_clipCubeMax.value.addVectors(this.clipCube.geometry.boundingBox.max, this.clipCube.position);
+        uniforms.u_clipCubeMin.value.addVectors(this.clipCube.geometry.boundingBox.min, this.clipCube.position);
+
+        // DEBUG
+        //console.log("Max = ", uniforms.u_clipCubeMax.value);
+    }
 }
 
 $(document).ready( () => {
@@ -531,6 +557,7 @@ $(document).ready( () => {
     let moveCubeUp = $("#moveCubeUp");
     let moveCubeBack = $("#moveCubeBack");
     let moveCubeForward = $("#moveCubeForward");
+    let clipVolume = $("#clipVolume");
 
     moveCubeLeft.on("mousedown", () => {
         app.moveClipCube(true, APPCONFIG.LEFT);
@@ -578,6 +605,10 @@ $(document).ready( () => {
 
     moveCubeForward.on("mouseup", () => {
         app.moveClipCube(false);
+    });
+
+    clipVolume.on("click", () => {
+        app.clipVolume();
     });
 
     app.run();
