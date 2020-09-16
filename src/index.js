@@ -123,19 +123,6 @@ class MedicalViz extends BaseApp {
             fragmentShader: fshader
         });
 
-        // Create viewing plane
-        let planeGeom = new THREE.PlaneBufferGeometry(APPCONFIG.PLANE_SIZE, APPCONFIG.PLANE_SIZE);
-        let planeMat = new THREE.MeshLambertMaterial( {color: 0xffffff});
-        this.viewingPlane = new THREE.Mesh(planeGeom, planeMat);
-        //this.scene.add(this.viewingPlane);
-
-        // Ref cube
-        let cubeGeom = new THREE.BoxBufferGeometry(10, 10, 10);
-        let cubeMat = new THREE.MeshLambertMaterial( { color: 0xff0000});
-        let cube = new THREE.Mesh(cubeGeom, cubeMat);
-        cube.position.z = -50;
-        //this.scene.add(cube);
-
         let volumeLines = [];
         
         volumeLines.push(new THREE.Line3());
@@ -183,6 +170,26 @@ class MedicalViz extends BaseApp {
 
             this.renderUpdate = true;
         });
+
+        let cubeMat = new THREE.LineBasicMaterial( { color: 0xff0000 });
+        let cubePoints = this.createCubePoints(APPCONFIG.CUBE_WIDTH);
+        let cubeGeom = new THREE.BufferGeometry().setFromPoints( cubePoints );
+        let cube = new THREE.Line( cubeGeom, cubeMat );
+        this.root.add( cube );
+    }
+
+    createCubePoints(width) {
+        let points = [];
+        points.push( new THREE.Vector3( -width/2, width/2, width/2 ));
+        points.push( new THREE.Vector3( -width/2, width/2, -width/2 ));
+        points.push( new THREE.Vector3( width/2, width/2, -width/2 ));
+        points.push( new THREE.Vector3( width/2, width/2, width/2 ));
+        points.push( new THREE.Vector3( -width/2, -width/2, -width/2 ));
+        points.push( new THREE.Vector3( -width/2, -width/2, -width/2 ));
+        points.push( new THREE.Vector3( width/2, -width/2, -width/2 ));
+        points.push( new THREE.Vector3( width/2, -width/2, width/2 ));
+
+        return points;
     }
 
     update() {
@@ -216,6 +223,7 @@ class MedicalViz extends BaseApp {
     }
 
     renderVolume() {
+        return;
         // Remove existing geometry
         this.scene.remove(this.root);
         this.root = new THREE.Object3D();
@@ -234,10 +242,6 @@ class MedicalViz extends BaseApp {
 
         this.viewingDir.set(this.controls.target, this.camera.position);
         this.viewingDir.closestPointToPoint(volumeVertices[nearest], false, this.offset);
-
-        // Viewing plane
-        this.viewingPlane.position.copy(this.offset);
-        this.viewingPlane.lookAt(this.controls.target);
 
         // DEBUG
         //console.log("Offset = ", offset);

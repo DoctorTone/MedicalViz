@@ -1,7 +1,6 @@
 // General parameters for this app
 
 const APPCONFIG = {
-    ROOT_ROTATE: Math.PI/2,
     CUBE_COLOUR : 0xfff000,
     CUBE_HEIGHT: 10,
     CUBE_WIDTH: 10,
