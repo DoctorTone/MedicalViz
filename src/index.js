@@ -535,6 +535,7 @@ class MedicalViz extends BaseApp {
         uniforms.u_clipCubeMax.value.addVectors(this.clipCube.geometry.boundingBox.max, this.clipCube.position);
         uniforms.u_clipCubeMin.value.addVectors(this.clipCube.geometry.boundingBox.min, this.clipCube.position);
         uniforms.u_clipCubeEnabled.value = !uniforms.u_clipCubeEnabled.value;
+        $("#clipVolume").html(uniforms.u_clipCubeEnabled.value ? "Reset" : "Clip");
     }
 }
 
