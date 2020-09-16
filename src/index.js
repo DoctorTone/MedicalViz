@@ -178,8 +178,8 @@ class MedicalViz extends BaseApp {
         let cubeGeom = this.createCubeSegments(APPCONFIG.CUBE_WIDTH);
         let cube = new THREE.LineSegments( cubeGeom, cubeMat );
         cube.computeLineDistances();
-        cube.position.set(0, 0, 0);
-        //this.scene.add( cube );
+        cube.position.set(APPCONFIG.CUBE_START_X, APPCONFIG.CUBE_START_Y, APPCONFIG.CUBE_START_Z);
+        this.scene.add( cube );
 
         // Clip plane representation
         let clipPlaneGeom = new THREE.PlaneBufferGeometry(APPCONFIG.PLANE_SIZE, APPCONFIG.PLANE_SIZE);
@@ -267,22 +267,16 @@ class MedicalViz extends BaseApp {
         this.viewingDir.set(this.controls.target, this.camera.position);
         this.viewingDir.closestPointToPoint(volumeVertices[nearest], false, this.offset);
 
-        // DEBUG
-        //console.log("Offset = ", offset);
-
         this.planeOffset = this.offset.sub(this.controls.target).length();
         this.numSlices = Math.round(this.planeOffset / this.planeInc) * 2;
+
         // Show number of slices
         $("#numSlices").html(this.numSlices);
 
         uniforms.u_thresh.value = $("#alphaRange").val() / 255.0;
         uniforms.u_alphaScale.value = $("#alphaScale").val();
 
-        //uniforms.u_slices.value.z = numSlices;
         this.planeOffset *= -1;
-        // Prevent co=planar issues
-        //this.planeOffset += (PLANE_INC * this.startSlice);
-        //planeOffset += planeInc;
         this.intersectPlane.set(this.planeNormal, this.planeOffset);
 
         // Get intersection points
@@ -299,9 +293,6 @@ class MedicalViz extends BaseApp {
             this.planeOffset += this.planeInc;
             this.intersectPlane.set(this.planeNormal, this.planeOffset);
 
-            // Viewing plane
-            //viewingPlane.position.copy(planeNormal.multiplyScalar(planeOffset * -1));
-
             // Remove duplicates
             currentGeometry.mergeVertices();
 
@@ -310,17 +301,14 @@ class MedicalViz extends BaseApp {
                 continue;
             }
             
-            //orderVertices(currentGeometry, camera.matrixWorldInverse);
             this.orderFaces(currentGeometry);
 
-            //currentMesh = new THREE.Mesh(currentGeometry, wireframeWhite);
             currentGeometry.computeBoundingSphere();
             currentGeometry.computeFaceNormals();
             currentMesh = new THREE.Mesh(currentGeometry, this.volumeShader);
             currentMesh.renderOrder = this.numSlices - slice;
             this.root.add(currentMesh);
         }
-        //displayElem.textContent = startSlice;
     }
 
     getIntersectionPoints(nearestVertex, intersectPlane) {
@@ -487,5 +475,6 @@ $(document).ready( () => {
     $("#clipPlaneXValue").on("input", event => {
         app.updateClipPlane(event.target.value);
     });
+
     app.run();
 });
