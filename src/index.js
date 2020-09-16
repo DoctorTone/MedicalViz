@@ -32,16 +32,19 @@ const fshader = `
     uniform float u_clipPlaneX;
     uniform vec3 u_clipCubeMax;
     uniform vec3 u_clipCubeMin;
+    uniform bool u_clipCubeEnabled;
 
     void main() {
-        if (texPosition.x > u_clipCubeMax.x || texPosition.x < u_clipCubeMin.x) {
-            discard;
-        }
-        if (texPosition.y > u_clipCubeMax.y || texPosition.y < u_clipCubeMin.y) {
-            discard;
-        }
-        if (texPosition.z > u_clipCubeMax.z || texPosition.z < u_clipCubeMin.z) {
-            discard;
+        if (u_clipCubeEnabled) {
+            if (texPosition.x > u_clipCubeMax.x || texPosition.x < u_clipCubeMin.x) {
+                discard;
+            }
+            if (texPosition.y > u_clipCubeMax.y || texPosition.y < u_clipCubeMin.y) {
+                discard;
+            }
+            if (texPosition.z > u_clipCubeMax.z || texPosition.z < u_clipCubeMin.z) {
+                discard;
+            }
         }
 
         vec3 texCoords = vec3((texPosition.x/u_slices.x) + 0.5, (texPosition.y/u_slices.y) + 0.5, (texPosition.z/u_slices.z) + 0.5);
@@ -91,7 +94,8 @@ const uniforms = {
     u_alphaScale: { value: $("#alphaScale").val() },
     u_clipPlaneX: { value: $("#clipPlaneXValue").val() },
     u_clipCubeMax: { value: new THREE.Vector3()},
-    u_clipCubeMin: { value: new THREE.Vector3()}
+    u_clipCubeMin: { value: new THREE.Vector3()},
+    u_clipCubeEnabled: { value: false }
 };
 
 class MedicalViz extends BaseApp {
