@@ -210,6 +210,7 @@ class MedicalViz extends BaseApp {
         uniforms.u_clipCubeMax.value = cube.geometry.boundingBox.max;
         uniforms.u_clipCubeMin.value = cube.geometry.boundingBox.min;
         
+        cube.visible = false;
         this.scene.add( cube );
         this.clipCube = cube;
 
