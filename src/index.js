@@ -56,6 +56,8 @@ const BOTTOM_EDGE_Y = -128;
 const FRONT_EDGE_Z = 110.5;
 const BACK_EDGE_Z = -110.5;
 
+const DIR_LEFT = new THREE.Vector3(-1, 0, 0);
+
 // Vertices
 const volumeVertices = [];
 volumeVertices.push(new THREE.Vector3(RIGHT_EDGE_X, TOP_EDGE_Y, FRONT_EDGE_Z));
@@ -98,6 +100,9 @@ class MedicalViz extends BaseApp {
         this.renderOveride = false;
         this.sliceScale = 1;
         this.planeInc = PLANE_INC * this.sliceScale;
+
+        // Cube attributes
+        this.cubeMoving = false;
 
         //Temp variables
         this.tempVec1 = new THREE.Vector3();
@@ -180,6 +185,7 @@ class MedicalViz extends BaseApp {
         cube.computeLineDistances();
         cube.position.set(APPCONFIG.CUBE_START_X, APPCONFIG.CUBE_START_Y, APPCONFIG.CUBE_START_Z);
         this.scene.add( cube );
+        this.clipCube = cube;
 
         // Clip plane representation
         let clipPlaneGeom = new THREE.PlaneBufferGeometry(APPCONFIG.PLANE_SIZE, APPCONFIG.PLANE_SIZE);
@@ -233,6 +239,10 @@ class MedicalViz extends BaseApp {
 
     update() {
         let delta = this.clock.getDelta();
+
+        if (this.cubeMoving) {
+            this.clipCube.position.addScaledVector(this.cubeDirection, delta * APPCONFIG.MOVE_SPEED);
+        }
 
         super.update();
     }
@@ -455,6 +465,19 @@ class MedicalViz extends BaseApp {
 
         return nearestVertex;
     }
+
+    moveClipCube(status, direction) {
+        switch (direction) {
+            case APPCONFIG.LEFT:
+                this.cubeDirection = DIR_LEFT;
+                break;
+
+            default:
+                break;
+        }
+
+        this.cubeMoving = status;
+    }
 }
 
 $(document).ready( () => {
@@ -474,6 +497,18 @@ $(document).ready( () => {
 
     $("#clipPlaneXValue").on("input", event => {
         app.updateClipPlane(event.target.value);
+    });
+
+    // Move elements
+    let moveCubeLeft = $("#moveCubeLeft");
+    let moveCubeRight = $("#moveCubeRight");
+
+    moveCubeLeft.on("mousedown", () => {
+        app.moveClipCube(true, APPCONFIG.LEFT);
+    });
+
+    moveCubeLeft.on("mouseup", () => {
+        app.moveClipCube(false);
     });
 
     app.run();

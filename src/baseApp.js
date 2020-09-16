@@ -208,10 +208,10 @@ export class BaseApp {
         this.update();
         if (this.renderUpdate) {
             this.renderVolume();
-            this.renderer.render( this.scene, this.camera );
             this.renderUpdate = false;
         }
         
+        this.renderer.render( this.scene, this.camera );
         if(this.stats) this.stats.update();
         requestAnimationFrame(() => {
             this.run();
