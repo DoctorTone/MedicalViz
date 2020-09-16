@@ -57,6 +57,7 @@ const FRONT_EDGE_Z = 110.5;
 const BACK_EDGE_Z = -110.5;
 
 const DIR_LEFT = new THREE.Vector3(-1, 0, 0);
+const DIR_RIGHT = new THREE.Vector3(1, 0, 0);
 
 // Vertices
 const volumeVertices = [];
@@ -472,6 +473,10 @@ class MedicalViz extends BaseApp {
                 this.cubeDirection = DIR_LEFT;
                 break;
 
+            case APPCONFIG.RIGHT:
+                this.cubeDirection = DIR_RIGHT;
+                break;
+
             default:
                 break;
         }
@@ -508,6 +513,14 @@ $(document).ready( () => {
     });
 
     moveCubeLeft.on("mouseup", () => {
+        app.moveClipCube(false);
+    });
+
+    moveCubeRight.on("mousedown", () => {
+        app.moveClipCube(true, APPCONFIG.RIGHT);
+    });
+
+    moveCubeRight.on("mouseup", () => {
         app.moveClipCube(false);
     });
 
