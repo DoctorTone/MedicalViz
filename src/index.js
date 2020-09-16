@@ -29,8 +29,12 @@ const fshader = `
     uniform sampler3D u_data;
     uniform float u_thresh;
     uniform float u_alphaScale;
+    uniform float u_clipPlaneX;
 
     void main() {
+        if (texPosition.x >= u_clipPlaneX) {
+            discard;
+        }
         vec3 texCoords = vec3((texPosition.x/u_slices.x) + 0.5, (texPosition.y/u_slices.y) + 0.5, (texPosition.z/u_slices.z) + 0.5);
         gl_FragColor = texture(u_data, texCoords);
         if (gl_FragColor.r < u_thresh) {
@@ -68,7 +72,8 @@ const uniforms = {
     u_data: { value: null },
     u_slices: { value: new THREE.Vector3(160, 256, 221)},
     u_thresh: { value: $("#alphaRange").val() / 255.0 },
-    u_alphaScale: { value: $("#alphaScale").val() }
+    u_alphaScale: { value: $("#alphaScale").val() },
+    u_clipPlaneX: { value: $("#clipPlaneXValue").val() }
 };
 
 class MedicalViz extends BaseApp {
@@ -189,6 +194,7 @@ class MedicalViz extends BaseApp {
         clipPlane.rotation.y = Math.PI/2;
         clipPlane.renderOrder = 1000;
         this.scene.add(clipPlane);
+        this.clipPlane = clipPlane;
 
         // Add global clipping plane
         /*
@@ -232,6 +238,12 @@ class MedicalViz extends BaseApp {
     }
 
     updateVolume() {
+        this.renderUpdate = true;
+    }
+
+    updateClipPlane(value) {
+        uniforms.u_clipPlaneX.value = value;
+        this.clipPlane.position.x = value;
         this.renderUpdate = true;
     }
 
@@ -472,5 +484,8 @@ $(document).ready( () => {
         app.updateVolume();
     });
 
+    $("#clipPlaneXValue").on("input", event => {
+        app.updateClipPlane(event.target.value);
+    });
     app.run();
 });
