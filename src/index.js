@@ -66,7 +66,7 @@ const fshader = `
         }
 
         if (u_clipPlaneZEnabled) {
-            if (texPosition.y > u_clipPlaneZ) {
+            if (texPosition.y < u_clipPlaneZ) {
                 discard;
             }
         }
@@ -278,6 +278,7 @@ class MedicalViz extends BaseApp {
         // Back to front plane
         let clipPlaneZ = new THREE.Mesh(clipPlaneGeom, clipPlaneMat);
         clipPlaneZ.position.y = APPCONFIG.PLANE_START_Y;
+        clipPlaneZ.rotation.x = -Math.PI/2;
         clipPlaneZ.renderOrder = APPCONFIG.RENDER_FIRST;
         clipPlaneZ.visible = false;
         this.scene.add(clipPlaneZ);
