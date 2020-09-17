@@ -559,6 +559,8 @@ class MedicalViz extends BaseApp {
 
     clipVolume() {
         this.clipCube.geometry.computeBoundingBox();
+        this.clipCube.geometry.boundingBox.max.multiply(this.clipCube.scale);
+        this.clipCube.geometry.boundingBox.min.multiply(this.clipCube.scale);
         uniforms.u_clipCubeMax.value.addVectors(this.clipCube.geometry.boundingBox.max, this.clipCube.position);
         uniforms.u_clipCubeMin.value.addVectors(this.clipCube.geometry.boundingBox.min, this.clipCube.position);
         uniforms.u_clipCubeEnabled.value = !uniforms.u_clipCubeEnabled.value;

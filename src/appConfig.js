@@ -23,7 +23,7 @@ const APPCONFIG = {
     ZOOM_SPEED: 0.1,
     PLANE_SIZE: 250,
     PLANE_START_X: 100,
-    MOVE_SPEED: 10,
+    MOVE_SPEED: 12.5,
     SCALE_SPEED: 2.5
 }
 
