@@ -82,6 +82,46 @@ const fshader = `
     }
 `
 
+const fSolidShader = `
+    precision mediump sampler3D;
+
+    varying vec4 texPosition;
+    uniform vec3 u_slices;
+    uniform sampler3D u_data;
+
+    void main() {
+        vec3 texCoords = vec3((texPosition.x/u_slices.x) + 0.5, (texPosition.y/u_slices.y) + 0.5, (texPosition.z/u_slices.z) + 0.5);
+        //vec3 normal = texture(u_data, texCoords).xyz;
+        vec3 normal = vec3(1.0, 1.0, 1.0);
+        vec3 camPos = vec3(0.0, -400.0, 100.0);
+        vec3 lightPos = vec3(100.0, -400.0, 200.0);
+
+        vec3 LightColour = vec3(1.0, 1.0, 1.0);
+        vec3 position = texPosition.xyz;
+        float Shininess = 10.0;
+        float Kd = 1.0;
+        float Ks = 1.0;
+
+        normal = normalize((normal * 2.0) - 1.0);
+        //Reorientate normal
+        float temp = dot(-camPos, normal);
+        normal *= temp;
+        normal = normalize(normal);
+        //Diffuse
+        vec3 normInterp = normal;
+        vec3 light = normalize(lightPos - position);
+        float diffuseLight = max(dot(normInterp, light), 0.0);
+        vec3 diffuse = Kd * LightColour * diffuseLight;
+        //Specular
+        vec3 V = normalize(camPos - position);
+        vec3 H = normalize(light + V);
+        float specularLight = pow(max(dot(normInterp, H), 0.0), Shininess);
+        vec3 specular = Ks * LightColour * specularLight;
+        gl_FragColor.rgb =  diffuse + specular;
+        gl_FragColor.a = 1.0;
+    }
+`
+
 const PLANE_INC = 1.0;
 
 // Front vertices
@@ -182,7 +222,9 @@ class MedicalViz extends BaseApp {
             transparent: true,
             side: THREE.DoubleSide,
             vertexShader: vshader,
-            fragmentShader: fshader
+            // DEBUG
+            //fragmentShader: fshader
+            fragmentShader: fSolidShader
         });
 
         let volumeLines = [];
