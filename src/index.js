@@ -127,17 +127,31 @@ const fSolidShader = `
     varying vec3 vCam;
     uniform vec3 u_slices;
     uniform sampler3D u_data;
+    uniform float u_thresh;
 
     void main() {
         vec3 texCoords = vec3((texPosition.x/u_slices.x) + 0.5, (texPosition.y/u_slices.y) + 0.5, (texPosition.z/u_slices.z) + 0.5);
         vec3 position = texCoords.xyz;
         //vec3 normal = texture(u_data, texCoords).xyz;
-        vec3 normal = vec3(0.0, 0.0, 1.0);
+        //vec3 normal = vec3(0.0, 0.0, 1.0);
         //vec3 camPos = vec3(0.0, 0.0, 400.0);
+        float thresh = texture(u_data, texCoords).r;
+        if (thresh < u_thresh) {
+            discard;
+        }
+
+        vec3 sample1, sample2;
+        sample1.x = texture(u_data, texCoords - vec3(1.0, 0.0, 0.0)).x;
+        sample2.x = texture(u_data, texCoords + vec3(1.0, 0.0, 0.0)).x;
+        sample1.y = texture(u_data, texCoords - vec3(0.0, 1.0, 0.0)).x;
+        sample2.y = texture(u_data, texCoords + vec3(0.0, 1.0, 0.0)).x;
+        sample1.z = texture(u_data, texCoords - vec3(0.0, 0.0, 1.0)).x;
+        sample2.z = texture(u_data, texCoords + vec3(0.0, 0.0, 1.0)).x;
+
         vec3 lightPos = vec3(80.0 * 3.0, 128.0 * 3.0, 110.0 * 3.0);
 
         //vec3 N = normalize( 2.0 * normal - vec3(1.0, 1.0, 1.0));
-        vec3 N = vNormal;
+        vec3 N = normalize(sample2 - sample1);
         vec3 L = normalize( lightPos - position);
         vec3 V = normalize( vCam - position);
 
@@ -243,8 +257,8 @@ class MedicalViz extends BaseApp {
         // Shader material
         this.volumeShader = new THREE.ShaderMaterial({
             uniforms: uniforms,
-            transparent: true,
-            side: THREE.DoubleSide,
+            transparent: false,
+            //side: THREE.DoubleSide,
             vertexShader: vshader,
             // DEBUG
             //fragmentShader: fshader
@@ -295,6 +309,11 @@ class MedicalViz extends BaseApp {
             texture3D.minFilter = texture3D.magFilter = THREE.LinearFilter;
             texture3D.unpackAlignment = 1;
             uniforms.u_data.value = texture3D;
+
+            // Box to render onto
+            let boxGeom = new THREE.BoxBufferGeometry(165, 256, 221);
+            let box = new THREE.Mesh(boxGeom, this.volumeShader);
+            this.scene.add(box);
 
             this.renderUpdate = true;
         });
@@ -349,11 +368,6 @@ class MedicalViz extends BaseApp {
         clipPlaneZ.visible = false;
         this.scene.add(clipPlaneZ);
         this.clipPlaneZ = clipPlaneZ;
-
-        // Box to render onto
-        let boxGeom = new THREE.BoxBufferGeometry(165, 256, 221);
-        let box = new THREE.Mesh(boxGeom, this.volumeShader);
-        this.scene.add(box);
     }
 
     createCubeSegments(width) {
@@ -425,6 +439,7 @@ class MedicalViz extends BaseApp {
     }
 
     renderVolume() {
+        uniforms.u_thresh.value = $("#alphaRange").val() / 255.0;
         return;
         // Remove existing geometry
         this.scene.remove(this.root);
