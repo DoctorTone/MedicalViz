@@ -33,6 +33,7 @@ const fshader = `
     uniform vec3 u_clipCubeMax;
     uniform vec3 u_clipCubeMin;
     uniform bool u_clipCubeEnabled;
+    uniform bool u_clipPlaneXEnabled;
 
     void main() {
         if (u_clipCubeEnabled) {
@@ -47,6 +48,12 @@ const fshader = `
             }
         }
 
+        if (u_clipPlaneXEnabled) {
+            if (texPosition.x > u_clipPlaneX) {
+                discard;
+            }
+        }
+        
         vec3 texCoords = vec3((texPosition.x/u_slices.x) + 0.5, (texPosition.y/u_slices.y) + 0.5, (texPosition.z/u_slices.z) + 0.5);
         gl_FragColor = texture(u_data, texCoords);
         if (gl_FragColor.r < u_thresh) {
@@ -98,6 +105,7 @@ const uniforms = {
     u_thresh: { value: $("#alphaRange").val() / 255.0 },
     u_alphaScale: { value: $("#alphaScale").val() },
     u_clipPlaneX: { value: $("#clipPlaneXValue").val() },
+    u_clipPlaneXEnabled: { value: false },
     u_clipCubeMax: { value: new THREE.Vector3()},
     u_clipCubeMin: { value: new THREE.Vector3()},
     u_clipCubeEnabled: { value: false }
@@ -284,7 +292,7 @@ class MedicalViz extends BaseApp {
 
     updateClipPlane(value) {
         uniforms.u_clipPlaneX.value = value;
-        this.clipPlane.position.x = value;
+        this.clipPlaneX.position.x = value;
         this.renderUpdate = true;
     }
 
@@ -568,6 +576,7 @@ class MedicalViz extends BaseApp {
         switch (planeID) {
             case APPCONFIG.CLIP_PLANE_X:
                 this.clipPlaneX.visible = !this.clipPlaneX.visible;
+                uniforms.u_clipPlaneXEnabled.value = this.clipPlaneX.visible;
                 break;
 
             default:
