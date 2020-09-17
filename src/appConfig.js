@@ -25,7 +25,8 @@ const APPCONFIG = {
     PLANE_START_X: 100,
     MOVE_SPEED: 12.5,
     SCALE_SPEED: 2.5,
-    RENDER_FIRST: 1000
+    RENDER_FIRST: 1000,
+    CLIP_PLANE_X: 0
 }
 
 // Line indices

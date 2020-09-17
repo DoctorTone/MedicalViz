@@ -220,6 +220,7 @@ class MedicalViz extends BaseApp {
         this.scene.add( cube );
         this.clipCube = cube;
 
+        // Add global clipping planes
         // Clip plane representation
         let clipPlaneGeom = new THREE.PlaneBufferGeometry(APPCONFIG.PLANE_SIZE, APPCONFIG.PLANE_SIZE);
         let clipPlaneMat = new THREE.MeshLambertMaterial({
@@ -228,21 +229,13 @@ class MedicalViz extends BaseApp {
             transparent: true,
             opacity: 0.25
         });
-        let clipPlane = new THREE.Mesh(clipPlaneGeom, clipPlaneMat);
-        clipPlane.position.x = APPCONFIG.PLANE_START_X;
-        clipPlane.rotation.y = Math.PI/2;
-        clipPlane.renderOrder = APPCONFIG.RENDER_FIRST;
-        clipPlane.visible = false;
-        this.scene.add(clipPlane);
-        this.clipPlane = clipPlane;
-
-        // Add global clipping plane
-        /*
-        let clipPlane = new THREE.Plane( new THREE.Vector3(-1, 0, 0), 0);
-        this.renderer.localClippingEnabled = false;
-        let globalPlanes = [ clipPlane ];
-        this.renderer.clippingPlanes = globalPlanes;
-        */
+        let clipPlaneX = new THREE.Mesh(clipPlaneGeom, clipPlaneMat);
+        clipPlaneX.position.x = APPCONFIG.PLANE_START_X;
+        clipPlaneX.rotation.y = Math.PI/2;
+        clipPlaneX.renderOrder = APPCONFIG.RENDER_FIRST;
+        clipPlaneX.visible = false;
+        this.scene.add(clipPlaneX);
+        this.clipPlaneX = clipPlaneX;
     }
 
     createCubeSegments(width) {
@@ -570,6 +563,17 @@ class MedicalViz extends BaseApp {
 
         $("#clipVolume").html(uniforms.u_clipCubeEnabled.value ? "Reset" : "Clip");
     }
+
+    toggleClipPlane(planeID) {
+        switch (planeID) {
+            case APPCONFIG.CLIP_PLANE_X:
+                this.clipPlaneX.visible = !this.clipPlaneX.visible;
+                break;
+
+            default:
+                break;
+        }
+    }
 }
 
 $(document).ready( () => {
@@ -602,6 +606,7 @@ $(document).ready( () => {
     let scaleCubeUp = $("#scaleCubeUp");
     let clipVolume = $("#clipVolume");
     let toggleClipCube = $("#toggleClipCube");
+    let toggleClipPlaneX = $("#toggleClipPlaneX");
 
     moveCubeLeft.on("mousedown", () => {
         app.moveClipCube(true, APPCONFIG.LEFT);
@@ -673,6 +678,10 @@ $(document).ready( () => {
 
     toggleClipCube.on("click", () => {
         app.toggleClipCube();
+    });
+
+    toggleClipPlaneX.on("click", () => {
+        app.toggleClipPlane(APPCONFIG.CLIP_PLANE_X);
     });
 
     app.run();
