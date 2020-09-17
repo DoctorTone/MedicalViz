@@ -204,7 +204,7 @@ class MedicalViz extends BaseApp {
             this.renderUpdate = true;
         });
 
-        // Add reference cube
+        // Add clip cube
         let cubeMat = new THREE.LineBasicMaterial( { color: 0xff0000 });
         let cubeGeom = this.createCubeSegments(APPCONFIG.CUBE_WIDTH);
         let cube = new THREE.LineSegments( cubeGeom, cubeMat );
@@ -231,7 +231,8 @@ class MedicalViz extends BaseApp {
         let clipPlane = new THREE.Mesh(clipPlaneGeom, clipPlaneMat);
         clipPlane.position.x = APPCONFIG.PLANE_START_X;
         clipPlane.rotation.y = Math.PI/2;
-        clipPlane.renderOrder = 1000;
+        clipPlane.renderOrder = APPCONFIG.RENDER_FIRST;
+        clipPlane.visible = false;
         this.scene.add(clipPlane);
         this.clipPlane = clipPlane;
 
@@ -566,7 +567,7 @@ class MedicalViz extends BaseApp {
         uniforms.u_clipCubeMax.value.addVectors(this.clipCube.geometry.boundingBox.max, this.clipCube.position);
         uniforms.u_clipCubeMin.value.addVectors(this.clipCube.geometry.boundingBox.min, this.clipCube.position);
         uniforms.u_clipCubeEnabled.value = !uniforms.u_clipCubeEnabled.value;
-        
+
         $("#clipVolume").html(uniforms.u_clipCubeEnabled.value ? "Reset" : "Clip");
     }
 }
