@@ -23,10 +23,13 @@ const APPCONFIG = {
     ZOOM_SPEED: 0.1,
     PLANE_SIZE: 250,
     PLANE_START_X: 100,
+    PLANE_START_Y: 150,
+    PLANE_START_Z: 130,
     MOVE_SPEED: 12.5,
     SCALE_SPEED: 2.5,
     RENDER_FIRST: 1000,
-    CLIP_PLANE_X: 0
+    CLIP_PLANE_X: 0,
+    CLIP_PLANE_Y: 1
 }
 
 // Line indices

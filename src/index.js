@@ -53,7 +53,7 @@ const fshader = `
                 discard;
             }
         }
-        
+
         vec3 texCoords = vec3((texPosition.x/u_slices.x) + 0.5, (texPosition.y/u_slices.y) + 0.5, (texPosition.z/u_slices.z) + 0.5);
         gl_FragColor = texture(u_data, texCoords);
         if (gl_FragColor.r < u_thresh) {
@@ -106,6 +106,8 @@ const uniforms = {
     u_alphaScale: { value: $("#alphaScale").val() },
     u_clipPlaneX: { value: $("#clipPlaneXValue").val() },
     u_clipPlaneXEnabled: { value: false },
+    u_clipPlaneY: { value: $("#clipPlaneYValue").val() },
+    u_clipPlaneYEnabled: { value: false },
     u_clipCubeMax: { value: new THREE.Vector3()},
     u_clipCubeMin: { value: new THREE.Vector3()},
     u_clipCubeEnabled: { value: false }
@@ -237,6 +239,7 @@ class MedicalViz extends BaseApp {
             transparent: true,
             opacity: 0.25
         });
+        // Right to left plane
         let clipPlaneX = new THREE.Mesh(clipPlaneGeom, clipPlaneMat);
         clipPlaneX.position.x = APPCONFIG.PLANE_START_X;
         clipPlaneX.rotation.y = Math.PI/2;
@@ -244,6 +247,14 @@ class MedicalViz extends BaseApp {
         clipPlaneX.visible = false;
         this.scene.add(clipPlaneX);
         this.clipPlaneX = clipPlaneX;
+
+        // Top to bottom plane
+        let clipPlaneY = new THREE.Mesh(clipPlaneGeom, clipPlaneMat);
+        clipPlaneY.position.z = APPCONFIG.PLANE_START_Z;
+        clipPlaneY.renderOrder = APPCONFIG.RENDER_FIRST;
+        clipPlaneY.visible = false;
+        this.scene.add(clipPlaneY);
+        this.clipPlaneY = clipPlaneY;
     }
 
     createCubeSegments(width) {
@@ -290,9 +301,22 @@ class MedicalViz extends BaseApp {
         this.renderUpdate = true;
     }
 
-    updateClipPlane(value) {
-        uniforms.u_clipPlaneX.value = value;
-        this.clipPlaneX.position.x = value;
+    updateClipPlane(planeID, value) {
+        switch (planeID) {
+            case APPCONFIG.CLIP_PLANE_X:
+                uniforms.u_clipPlaneX.value = value;
+                this.clipPlaneX.position.x = value;
+                break;
+
+            case APPCONFIG.CLIP_PLANE_Y:
+                uniforms.u_clipPlaneY.value = value;
+                this.clipPlaneY.position.z = value;
+                break;
+
+            default:
+                break;
+        }
+        
         this.renderUpdate = true;
     }
 
@@ -579,6 +603,10 @@ class MedicalViz extends BaseApp {
                 uniforms.u_clipPlaneXEnabled.value = this.clipPlaneX.visible;
                 break;
 
+            case APPCONFIG.CLIP_PLANE_Y:
+                this.clipPlaneY.visible = !this.clipPlaneY.visible;
+                break;
+
             default:
                 break;
         }
@@ -601,7 +629,11 @@ $(document).ready( () => {
     });
 
     $("#clipPlaneXValue").on("input", event => {
-        app.updateClipPlane(event.target.value);
+        app.updateClipPlane(APPCONFIG.CLIP_PLANE_X, event.target.value);
+    });
+
+    $("#clipPlaneYValue").on("input", event => {
+        app.updateClipPlane(APPCONFIG.CLIP_PLANE_Y, event.target.value);
     });
 
     // Move elements
@@ -616,6 +648,7 @@ $(document).ready( () => {
     let clipVolume = $("#clipVolume");
     let toggleClipCube = $("#toggleClipCube");
     let toggleClipPlaneX = $("#toggleClipPlaneX");
+    let toggleClipPlaneY = $("#toggleClipPlaneY");
 
     moveCubeLeft.on("mousedown", () => {
         app.moveClipCube(true, APPCONFIG.LEFT);
@@ -691,6 +724,10 @@ $(document).ready( () => {
 
     toggleClipPlaneX.on("click", () => {
         app.toggleClipPlane(APPCONFIG.CLIP_PLANE_X);
+    });
+
+    toggleClipPlaneY.on("click", () => {
+        app.toggleClipPlane(APPCONFIG.CLIP_PLANE_Y);
     });
 
     app.run();
