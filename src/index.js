@@ -30,10 +30,12 @@ const fshader = `
     uniform float u_thresh;
     uniform float u_alphaScale;
     uniform float u_clipPlaneX;
+    uniform float u_clipPlaneY;
     uniform vec3 u_clipCubeMax;
     uniform vec3 u_clipCubeMin;
     uniform bool u_clipCubeEnabled;
     uniform bool u_clipPlaneXEnabled;
+    uniform bool u_clipPlaneYEnabled;
 
     void main() {
         if (u_clipCubeEnabled) {
@@ -48,8 +50,15 @@ const fshader = `
             }
         }
 
+        // Model is rotated so that y-axis => z-axis
         if (u_clipPlaneXEnabled) {
             if (texPosition.x > u_clipPlaneX) {
+                discard;
+            }
+        }
+
+        if (u_clipPlaneYEnabled) {
+            if (texPosition.z > u_clipPlaneY) {
                 discard;
             }
         }
@@ -605,6 +614,7 @@ class MedicalViz extends BaseApp {
 
             case APPCONFIG.CLIP_PLANE_Y:
                 this.clipPlaneY.visible = !this.clipPlaneY.visible;
+                uniforms.u_clipPlaneYEnabled.value = this.clipPlaneY.visible;
                 break;
 
             default:
