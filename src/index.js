@@ -83,6 +83,38 @@ const fshader = `
 `
 
 const fSolidShader = `
+    vec3 shading(vec3 N, vec3 V, vec3 L) {
+
+        // Materials
+        vec3 Ka = vec3(0.1, 0.1, 0.1); // Ambient
+        vec3 Kd = vec3(0.6, 0.6, 0.6); // Diffuse
+        vec3 Ks = vec3(0.2, 0.2, 0.2); // Specular
+        float shininess = 100.0; // Shininess
+
+        // Light properties
+        vec3 lightColour = vec3(1.0, 1.0, 1.0);
+        vec3 ambientLight = vec3(0.3, 0.3, 0.3);
+
+        // Halfway vector
+        vec3 H = normalize(L + V);
+
+        // Ambient term
+        vec3 ambient = Ka * ambientLight;
+
+        // Diffuse term
+        float diffuseLight = max(dot(L, N), 0.0);
+        vec3 diffuse = Kd * lightColour * diffuseLight;
+
+        // Specular term
+        float specularLight = pow(max(dot(H, N), 0.0), shininess);
+        if (diffuseLight <= 0.0) {
+            specularLight = 0.0;
+        }
+        vec3 specular = Ks * lightColour * specularLight;
+
+        return ambient + diffuse + specular;
+    }
+
     precision mediump sampler3D;
 
     varying vec4 texPosition;
@@ -91,33 +123,17 @@ const fSolidShader = `
 
     void main() {
         vec3 texCoords = vec3((texPosition.x/u_slices.x) + 0.5, (texPosition.y/u_slices.y) + 0.5, (texPosition.z/u_slices.z) + 0.5);
+        vec3 position = texCoords.xyz;
         //vec3 normal = texture(u_data, texCoords).xyz;
-        vec3 normal = vec3(1.0, 1.0, 1.0);
-        vec3 camPos = vec3(0.0, -400.0, 100.0);
-        vec3 lightPos = vec3(100.0, -400.0, 200.0);
+        vec3 normal = vec3(0.0, 0.0, 1.0);
+        vec3 camPos = vec3(0.0, 0.0, 400.0);
+        vec3 lightPos = vec3(0.0, 0.0, 400.0);
 
-        vec3 LightColour = vec3(1.0, 1.0, 1.0);
-        vec3 position = texPosition.xyz;
-        float Shininess = 10.0;
-        float Kd = 1.0;
-        float Ks = 1.0;
+        vec3 N = normalize( 2.0 * normal - 1.0);
+        vec3 L = normalize( lightPos - position);
+        vec3 V = normalize( camPos - position);
 
-        normal = normalize((normal * 2.0) - 1.0);
-        //Reorientate normal
-        float temp = dot(-camPos, normal);
-        normal *= temp;
-        normal = normalize(normal);
-        //Diffuse
-        vec3 normInterp = normal;
-        vec3 light = normalize(lightPos - position);
-        float diffuseLight = max(dot(normInterp, light), 0.0);
-        vec3 diffuse = Kd * LightColour * diffuseLight;
-        //Specular
-        vec3 V = normalize(camPos - position);
-        vec3 H = normalize(light + V);
-        float specularLight = pow(max(dot(normInterp, H), 0.0), Shininess);
-        vec3 specular = Ks * LightColour * specularLight;
-        gl_FragColor.rgb =  diffuse + specular;
+        gl_FragColor.rgb = shading(N, V, L);
         gl_FragColor.a = 1.0;
     }
 `
@@ -325,6 +341,9 @@ class MedicalViz extends BaseApp {
         clipPlaneZ.visible = false;
         this.scene.add(clipPlaneZ);
         this.clipPlaneZ = clipPlaneZ;
+
+        // Box to render onto
+
     }
 
     createCubeSegments(width) {

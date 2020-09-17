@@ -124,8 +124,11 @@ export class BaseApp {
     createScene() {
         let scene = new THREE.Scene();
 
+        // DEBUG
+        /*
         let ambientLight = new THREE.AmbientLight(SceneConfig.ambientLightColour);
         scene.add(ambientLight);
+        */
 
         /*
          var spotLight = new THREE.SpotLight(0xffffff);
@@ -144,7 +147,8 @@ export class BaseApp {
         let pointLight = new THREE.PointLight(SceneConfig.pointLightColour);
         pointLight.position.set(100,100,400);
         pointLight.name = 'PointLight';
-        scene.add(pointLight);
+        // DEBUG
+        //scene.add(pointLight);
 
         this.scene = scene;
     }
