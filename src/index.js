@@ -68,12 +68,17 @@ const BOTTOM_EDGE_Y = -128;
 const FRONT_EDGE_Z = 110.5;
 const BACK_EDGE_Z = -110.5;
 
+// Cube movement
 const DIR_LEFT = new THREE.Vector3(-1, 0, 0);
 const DIR_RIGHT = new THREE.Vector3(1, 0, 0);
 const DIR_DOWN = new THREE.Vector3(0, 0, -1);
 const DIR_UP = new THREE.Vector3(0, 0, 1);
 const DIR_BACK = new THREE.Vector3(0, 1, 0);
 const DIR_FORWARD = new THREE.Vector3(0, -1, 0);
+
+// Cube scale
+const CUBE_SCALE_DOWN = new THREE.Vector3(-1, -1, -1);
+const CUBE_SCALE_UP = new THREE.Vector3(1, 1, 1);
 
 // Vertices
 const volumeVertices = [];
@@ -123,6 +128,7 @@ class MedicalViz extends BaseApp {
 
         // Cube attributes
         this.cubeMoving = false;
+        this.cubeScaling = false;
 
         //Temp variables
         this.tempVec1 = new THREE.Vector3();
@@ -269,6 +275,10 @@ class MedicalViz extends BaseApp {
 
         if (this.cubeMoving) {
             this.clipCube.position.addScaledVector(this.cubeDirection, delta * APPCONFIG.MOVE_SPEED);
+        }
+
+        if (this.cubeScaling) {
+            this.clipCube.scale.addScaledVector(this.cubeScale, delta * APPCONFIG.SCALE_SPEED);
         }
 
         super.update();
@@ -526,6 +536,23 @@ class MedicalViz extends BaseApp {
         this.cubeMoving = status;
     }
 
+    scaleClipCube(status, direction) {
+        switch (direction) {
+            case APPCONFIG.SCALE_DOWN:
+                this.cubeScale = CUBE_SCALE_DOWN;
+                break;
+
+            case APPCONFIG.SCALE_UP:
+                this.cubeScale = CUBE_SCALE_UP;
+                break;
+
+            default:
+                break;
+        }
+
+        this.cubeScaling = status;
+    }
+
     toggleClipCube() {
         this.clipCube.visible = !this.clipCube.visible;
     }
@@ -565,6 +592,8 @@ $(document).ready( () => {
     let moveCubeUp = $("#moveCubeUp");
     let moveCubeBack = $("#moveCubeBack");
     let moveCubeForward = $("#moveCubeForward");
+    let scaleCubeDown = $("#scaleCubeDown");
+    let scaleCubeUp = $("#scaleCubeUp");
     let clipVolume = $("#clipVolume");
     let toggleClipCube = $("#toggleClipCube");
 
@@ -614,6 +643,22 @@ $(document).ready( () => {
 
     moveCubeForward.on("mouseup", () => {
         app.moveClipCube(false);
+    });
+
+    scaleCubeDown.on("mousedown", () => {
+        app.scaleClipCube(true, APPCONFIG.SCALE_DOWN);
+    });
+
+    scaleCubeDown.on("mouseup", () => {
+        app.scaleClipCube(false);
+    });
+
+    scaleCubeUp.on("mousedown", () => {
+        app.scaleClipCube(true, APPCONFIG.SCALE_UP);
+    });
+
+    scaleCubeUp.on("mouseup", () => {
+        app.scaleClipCube(false);
     });
 
     clipVolume.on("click", () => {

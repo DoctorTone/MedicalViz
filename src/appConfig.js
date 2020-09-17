@@ -18,10 +18,13 @@ const APPCONFIG = {
     DOWN: 3,
     BACK: 4,
     FORWARD: 5,
+    SCALE_DOWN: 0,
+    SCALE_UP: 1,
     ZOOM_SPEED: 0.1,
     PLANE_SIZE: 250,
     PLANE_START_X: 100,
-    MOVE_SPEED: 10
+    MOVE_SPEED: 10,
+    SCALE_SPEED: 2.5
 }
 
 // Line indices
