@@ -35,6 +35,11 @@ body {
 	right: 1%;
 	width: 15%;
 }
+#clipPlaneY {
+    top: 35%;
+    right: 1%;
+    width: 15%;
+}
 #cubeControls {
 	top: 50%;
 	right: 1%;
