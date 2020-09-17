@@ -262,7 +262,7 @@ class MedicalViz extends BaseApp {
         let clipPlaneX = new THREE.Mesh(clipPlaneGeom, clipPlaneMat);
         clipPlaneX.position.x = APPCONFIG.PLANE_START_X;
         clipPlaneX.rotation.y = Math.PI/2;
-        clipPlaneX.renderOrder = APPCONFIG.RENDER_FIRST;
+        clipPlaneX.renderOrder = APPCONFIG.RENDER_FIRST +2;
         clipPlaneX.visible = false;
         this.scene.add(clipPlaneX);
         this.clipPlaneX = clipPlaneX;
@@ -270,7 +270,7 @@ class MedicalViz extends BaseApp {
         // Top to bottom plane
         let clipPlaneY = new THREE.Mesh(clipPlaneGeom, clipPlaneMat);
         clipPlaneY.position.z = APPCONFIG.PLANE_START_Z;
-        clipPlaneY.renderOrder = APPCONFIG.RENDER_FIRST;
+        clipPlaneY.renderOrder = APPCONFIG.RENDER_FIRST + 1;
         clipPlaneY.visible = false;
         this.scene.add(clipPlaneY);
         this.clipPlaneY = clipPlaneY;
