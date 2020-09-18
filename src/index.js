@@ -187,12 +187,19 @@ const fSolidShader = `
         sample2.z = texture(u_data, texCoords + vec3(0.0, 0.0, delta)).x;
 
         vec3 lightPos = vec3(100.0, -600.0, 100.0);
+        vec3 lightPos2 = vec3(0.0, 300.0, 0.0);
 
         vec3 N = normalize(sample1 - sample2);
         vec3 L = normalize( lightPos - position);
+        vec3 L2 = normalize( lightPos2 - position);
         vec3 V = normalize( vCam - position);
 
-        gl_FragColor.rgb = shading(N, V, L);
+        vec3 shade1 = shading(N, V, L);
+        vec3 shade2 = shading(N, V, L2);
+
+        gl_FragColor.rgb = shade1 + shade2;
+
+
         gl_FragColor.a = 1.0;
     }
 `
