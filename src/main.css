@@ -50,6 +50,11 @@ body {
 	right: 1%;
 	width: 10%;
 }
+#toggleShaderContainer {
+    bottom: 12.5%;
+    right: 1%;
+    width: 15%;
+}
 .switch {
     position: relative;
     display: inline-block;
