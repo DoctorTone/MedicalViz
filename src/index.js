@@ -15,11 +15,11 @@ import "./main.css";
 const vshader = `
     varying vec4 texPosition;
 
-    varying vec3 vNormal;
+    //varying vec3 vNormal;
     varying vec3 vCam;
 
     void main() {
-        vNormal = normal;
+        //vNormal = normal;
         vCam = cameraPosition;
         texPosition = modelMatrix * vec4(position, 1.0);
         gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
@@ -123,11 +123,17 @@ const fSolidShader = `
     precision mediump sampler3D;
 
     varying vec4 texPosition;
-    varying vec3 vNormal;
+    //varying vec3 vNormal;
     varying vec3 vCam;
     uniform vec3 u_slices;
     uniform sampler3D u_data;
     uniform float u_thresh;
+    uniform float u_clipPlaneX;
+    uniform float u_clipPlaneY;
+    uniform float u_clipPlaneZ;
+    uniform bool u_clipPlaneXEnabled;
+    uniform bool u_clipPlaneYEnabled;
+    uniform bool u_clipPlaneZEnabled;
 
     void main() {
         vec3 texCoords = vec3((texPosition.x/u_slices.x) + 0.5, (texPosition.y/u_slices.y) + 0.5, (texPosition.z/u_slices.z) + 0.5);
@@ -140,18 +146,38 @@ const fSolidShader = `
             discard;
         }
 
+        // Model is rotated so that y-axis => z-axis
+        if (u_clipPlaneXEnabled) {
+            if (texPosition.x > u_clipPlaneX) {
+                discard;
+            }
+        }
+
+        if (u_clipPlaneYEnabled) {
+            if (texPosition.z > u_clipPlaneY) {
+                discard;
+            }
+        }
+
+        if (u_clipPlaneZEnabled) {
+            if (texPosition.y < u_clipPlaneZ) {
+                discard;
+            }
+        }
+
+        gl_FragColor = vec4(0.0);
+        float delta = 1.0/256.0;
         vec3 sample1, sample2;
-        sample1.x = texture(u_data, texCoords - vec3(1.0, 0.0, 0.0)).x;
-        sample2.x = texture(u_data, texCoords + vec3(1.0, 0.0, 0.0)).x;
-        sample1.y = texture(u_data, texCoords - vec3(0.0, 1.0, 0.0)).x;
-        sample2.y = texture(u_data, texCoords + vec3(0.0, 1.0, 0.0)).x;
-        sample1.z = texture(u_data, texCoords - vec3(0.0, 0.0, 1.0)).x;
-        sample2.z = texture(u_data, texCoords + vec3(0.0, 0.0, 1.0)).x;
+        sample1.x = texture(u_data, texCoords - vec3(delta, 0.0, 0.0)).x;
+        sample2.x = texture(u_data, texCoords + vec3(delta, 0.0, 0.0)).x;
+        sample1.y = texture(u_data, texCoords - vec3(0.0, delta, 0.0)).x;
+        sample2.y = texture(u_data, texCoords + vec3(0.0, delta, 0.0)).x;
+        sample1.z = texture(u_data, texCoords - vec3(0.0, 0.0, delta)).x;
+        sample2.z = texture(u_data, texCoords + vec3(0.0, 0.0, delta)).x;
 
-        vec3 lightPos = vec3(80.0 * 3.0, 128.0 * 3.0, 110.0 * 3.0);
+        vec3 lightPos = vec3(80.0 * 2.0, -110.0 * 2.0, 0.0 * 3.0);
 
-        //vec3 N = normalize( 2.0 * normal - vec3(1.0, 1.0, 1.0));
-        vec3 N = normalize(sample2 - sample1);
+        vec3 N = normalize(sample1 - sample2);
         vec3 L = normalize( lightPos - position);
         vec3 V = normalize( vCam - position);
 
@@ -258,7 +284,7 @@ class MedicalViz extends BaseApp {
         this.volumeShader = new THREE.ShaderMaterial({
             uniforms: uniforms,
             transparent: false,
-            //side: THREE.DoubleSide,
+            //side: THREE.BackSide,
             vertexShader: vshader,
             // DEBUG
             //fragmentShader: fshader
@@ -313,6 +339,7 @@ class MedicalViz extends BaseApp {
             // Box to render onto
             let boxGeom = new THREE.BoxBufferGeometry(165, 256, 221);
             let box = new THREE.Mesh(boxGeom, this.volumeShader);
+            //box.renderOrder = 1000;
             this.scene.add(box);
 
             this.renderUpdate = true;
@@ -439,8 +466,6 @@ class MedicalViz extends BaseApp {
     }
 
     renderVolume() {
-        uniforms.u_thresh.value = $("#alphaRange").val() / 255.0;
-        return;
         // Remove existing geometry
         this.scene.remove(this.root);
         this.root = new THREE.Object3D();
