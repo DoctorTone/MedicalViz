@@ -251,11 +251,15 @@ const uniforms = {
 const transparentVolumeShader = new THREE.ShaderMaterial({
     uniforms: uniforms,
     transparent: true,
-    //side: THREE.BackSide,
     vertexShader: vshader,
-    // DEBUG
     fragmentShader: fshader
-    //fragmentShader: fSolidShader
+});
+
+const solidVolumeShader = new THREE.ShaderMaterial({
+    uniforms: uniforms,
+    transparent: false,
+    vertexShader: vshader,
+    fragmentShader: fSolidShader
 });
 
 class MedicalViz extends BaseApp {
@@ -768,6 +772,11 @@ class MedicalViz extends BaseApp {
                 break;
         }
     }
+
+    toggleShader() {
+        this.currentShader = this.currentShader === transparentVolumeShader ? solidVolumeShader : transparentVolumeShader;
+        this.renderUpdate = true;
+    }
 }
 
 $(document).ready( () => {
@@ -811,6 +820,7 @@ $(document).ready( () => {
     let toggleClipPlaneX = $("#toggleClipPlaneX");
     let toggleClipPlaneY = $("#toggleClipPlaneY");
     let toggleClipPlaneZ = $("#toggleClipPlaneZ");
+    let toggleShader = $("#toggleShader");
 
     moveCubeLeft.on("mousedown", () => {
         app.moveClipCube(true, APPCONFIG.LEFT);
@@ -894,6 +904,10 @@ $(document).ready( () => {
 
     toggleClipPlaneZ.on("click", () => {
         app.toggleClipPlane(APPCONFIG.CLIP_PLANE_Z);
+    });
+
+    toggleShader.on("click", () => {
+        app.toggleShader();
     });
 
     app.run();
