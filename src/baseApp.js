@@ -125,10 +125,10 @@ export class BaseApp {
         let scene = new THREE.Scene();
 
         // DEBUG
-        /*
+        
         let ambientLight = new THREE.AmbientLight(SceneConfig.ambientLightColour);
         scene.add(ambientLight);
-        */
+        
 
         /*
          var spotLight = new THREE.SpotLight(0xffffff);

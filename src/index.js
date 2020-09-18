@@ -134,16 +134,21 @@ const fSolidShader = `
     uniform bool u_clipPlaneXEnabled;
     uniform bool u_clipPlaneYEnabled;
     uniform bool u_clipPlaneZEnabled;
+    uniform vec3 u_clipCubeMax;
+    uniform vec3 u_clipCubeMin;
+    uniform bool u_clipCubeEnabled;
 
     void main() {
-        vec3 texCoords = vec3((texPosition.x/u_slices.x) + 0.5, (texPosition.y/u_slices.y) + 0.5, (texPosition.z/u_slices.z) + 0.5);
-        vec3 position = texCoords.xyz;
-        //vec3 normal = texture(u_data, texCoords).xyz;
-        //vec3 normal = vec3(0.0, 0.0, 1.0);
-        //vec3 camPos = vec3(0.0, 0.0, 400.0);
-        float thresh = texture(u_data, texCoords).r;
-        if (thresh < u_thresh) {
-            discard;
+        if (u_clipCubeEnabled) {
+            if (texPosition.x > u_clipCubeMax.x || texPosition.x < u_clipCubeMin.x) {
+                discard;
+            }
+            if (texPosition.y > u_clipCubeMax.y || texPosition.y < u_clipCubeMin.y) {
+                discard;
+            }
+            if (texPosition.z > u_clipCubeMax.z || texPosition.z < u_clipCubeMin.z) {
+                discard;
+            }
         }
 
         // Model is rotated so that y-axis => z-axis
@@ -165,7 +170,13 @@ const fSolidShader = `
             }
         }
 
-        gl_FragColor = vec4(0.0);
+        vec3 texCoords = vec3((texPosition.x/u_slices.x) + 0.5, (texPosition.y/u_slices.y) + 0.5, (texPosition.z/u_slices.z) + 0.5);
+        vec3 position = texCoords.xyz;
+        float thresh = texture(u_data, texCoords).r;
+        if (thresh < u_thresh) {
+            discard;
+        }
+
         float delta = 1.0/256.0;
         vec3 sample1, sample2;
         sample1.x = texture(u_data, texCoords - vec3(delta, 0.0, 0.0)).x;
