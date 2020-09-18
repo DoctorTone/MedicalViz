@@ -186,7 +186,7 @@ const fSolidShader = `
         sample1.z = texture(u_data, texCoords - vec3(0.0, 0.0, delta)).x;
         sample2.z = texture(u_data, texCoords + vec3(0.0, 0.0, delta)).x;
 
-        vec3 lightPos = vec3(80.0 * 2.0, -110.0 * 2.0, 0.0 * 3.0);
+        vec3 lightPos = vec3(100.0, -600.0, 100.0);
 
         vec3 N = normalize(sample1 - sample2);
         vec3 L = normalize( lightPos - position);
