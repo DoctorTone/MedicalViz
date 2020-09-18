@@ -20,6 +20,11 @@ body {
     right: 1%;
     width: 15%;
 }
+#clipPlanes {
+    top: 30%;
+    right: 1%;
+    width: 15%;
+}
 #alphaThreshold {
 	top: 5%;
 	right: 1%;
