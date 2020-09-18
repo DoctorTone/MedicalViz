@@ -247,6 +247,17 @@ const uniforms = {
     u_clipCubeEnabled: { value: false }
 };
 
+// Shader materials
+const transparentVolumeShader = new THREE.ShaderMaterial({
+    uniforms: uniforms,
+    transparent: true,
+    //side: THREE.BackSide,
+    vertexShader: vshader,
+    // DEBUG
+    fragmentShader: fshader
+    //fragmentShader: fSolidShader
+});
+
 class MedicalViz extends BaseApp {
     constructor() {
         super();
@@ -269,6 +280,7 @@ class MedicalViz extends BaseApp {
         this.renderOveride = false;
         this.sliceScale = 1;
         this.planeInc = PLANE_INC * this.sliceScale;
+        this.currentShader = transparentVolumeShader;
 
         // Cube attributes
         this.cubeMoving = false;
@@ -290,17 +302,6 @@ class MedicalViz extends BaseApp {
         // Create root object.
         this.root = new THREE.Object3D();
         this.scene.add(this.root);
-
-        // Shader material
-        this.volumeShader = new THREE.ShaderMaterial({
-            uniforms: uniforms,
-            transparent: false,
-            //side: THREE.BackSide,
-            vertexShader: vshader,
-            // DEBUG
-            //fragmentShader: fshader
-            fragmentShader: fSolidShader
-        });
 
         let volumeLines = [];
         
@@ -346,12 +347,6 @@ class MedicalViz extends BaseApp {
             texture3D.minFilter = texture3D.magFilter = THREE.LinearFilter;
             texture3D.unpackAlignment = 1;
             uniforms.u_data.value = texture3D;
-
-            // Box to render onto
-            let boxGeom = new THREE.BoxBufferGeometry(165, 256, 221);
-            let box = new THREE.Mesh(boxGeom, this.volumeShader);
-            //box.renderOrder = 1000;
-            this.scene.add(box);
 
             this.renderUpdate = true;
         });
@@ -534,7 +529,7 @@ class MedicalViz extends BaseApp {
 
             currentGeometry.computeBoundingSphere();
             currentGeometry.computeFaceNormals();
-            currentMesh = new THREE.Mesh(currentGeometry, this.volumeShader);
+            currentMesh = new THREE.Mesh(currentGeometry, this.currentShader);
             currentMesh.renderOrder = this.numSlices - slice;
             this.root.add(currentMesh);
         }
