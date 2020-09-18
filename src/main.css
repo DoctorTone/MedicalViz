@@ -15,6 +15,11 @@ body {
 	top: 1%;
 	left: 1%;
 }
+#alphaProperties {
+    top: 2%;
+    right: 1%;
+    width: 15%;
+}
 #alphaThreshold {
 	top: 5%;
 	right: 1%;
