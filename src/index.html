@@ -6,9 +6,6 @@
     <title>Medical Visualisation</title>
 </head>
 <body>
-    <div id="slices" class="panel">
-        <h6>Num slices = <span id="numSlices">0</span></h6>
-    </div>
     <div id="alphaProperties" class="panel">
         <h6>Alpha Threshold</h6>
         <input type="range" class="form-control-range w-100 mb-3" id="alphaRange" min="0" max="255" step="1" value="10">
@@ -16,23 +13,25 @@
         <input type="range" class="form-control-range w-100 mb-3" id="alphaScale" min="0.01" max="1" step="0.01" value="1">
         <h6>Sample Distance</h6>
         <input type="range" class="form-control-range w-100 mb-3" id="sampleDist" min="0.1" max="1" step="0.1" value="1">
+        <h6 class="mb-4">Number of slices = <span id="numSlices">0</span></h6>
         <h6>Interaction scale</h6>
         <input type="range" class="form-control-range w-100" id="sampleScale" min="1" max="10" step="1" value="4">
     </div>
     <div id="clipPlanes" class="panel">
-        <p>Clip Planes</p>
+        <h5>Clipping</h5>
+        <h6>Planes</h6>
         <label class="switch">
             <input id="toggleClipPlaneX" type="checkbox">
             <span class="slider round"></span>
         </label>
         <span>X</span>
-        <input type="range" class="form-control-range w-100" id="clipPlaneXValue" min="-100" max="100" step="1" value="100">
+        <input type="range" class="form-control-range w-100 mb-3" id="clipPlaneXValue" min="-100" max="100" step="1" value="100">
         <label class="switch">
             <input id="toggleClipPlaneY" type="checkbox">
             <span class="slider round"></span>
         </label>
         <span>Y</span>
-        <input type="range" class="form-control-range w-100" id="clipPlaneYValue" min="-150" max="150" step="1" value="150">
+        <input type="range" class="form-control-range w-100 mb-3" id="clipPlaneYValue" min="-150" max="150" step="1" value="150">
         <label class="switch">
             <input id="toggleClipPlaneZ" type="checkbox">
             <span class="slider round"></span>
@@ -41,6 +40,7 @@
         <input type="range" class="form-control-range w-100" id="clipPlaneZValue" min="-130" max="130" step="1" value="-130">
     </div>
     <div id="cubeControls" class="panel">
+        <h6>Cube</h6>
         <div>
             <label class="switch">
                 <input id="toggleClipCube" type="checkbox">
@@ -72,6 +72,7 @@
         </div>
     </div>
     <div id="toggleShaderContainer" class="panel">
+        <h6 class="mb-3">Appearance</h6>
         <span>Transparent</span>
         <label class="switch">
             <input id="toggleShader" type="checkbox">

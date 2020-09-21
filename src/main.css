@@ -21,8 +21,8 @@ body {
     width: 15%;
 }
 #clipPlanes {
-    top: 30%;
-    right: 1%;
+    top: 3%;
+    left: 2%;
     width: 15%;
 }
 #alphaThreshold {
@@ -56,12 +56,12 @@ body {
     width: 15%;
 }
 #cubeControls {
-	top: 50%;
-	right: 1%;
+	top: 34%;
+	left: 2%;
 	width: 10%;
 }
 #toggleShaderContainer {
-    bottom: 12.5%;
+    top: 40%;
     right: 1%;
     width: 15%;
 }
