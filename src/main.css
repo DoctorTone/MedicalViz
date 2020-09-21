@@ -80,6 +80,14 @@ body {
     left: 1%;
     width: 50%;
 }
+#info {
+    bottom: 1%;
+    right: 1%;
+    width: 50%;
+}
+#info img {
+    width: 7.5%;
+}
 .switch {
     position: relative;
     display: inline-block;
