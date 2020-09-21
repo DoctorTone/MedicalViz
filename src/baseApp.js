@@ -148,7 +148,7 @@ export class BaseApp {
         pointLight.position.set(100,100,400);
         pointLight.name = 'PointLight';
         // DEBUG
-        //scene.add(pointLight);
+        scene.add(pointLight);
 
         this.scene = scene;
     }

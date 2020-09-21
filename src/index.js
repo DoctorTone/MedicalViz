@@ -388,13 +388,30 @@ class MedicalViz extends BaseApp {
             opacity: 0.25
         });
         // Right to left plane
+        let clipPlaneXGroup = new THREE.Group();
+        this.scene.add(clipPlaneXGroup);
+        let sphereGeom = new THREE.SphereBufferGeometry(APPCONFIG.PLANE_CORNER_RADIUS);
+        let sphereMat = new THREE.MeshLambertMaterial( { color: 0xffa500});
+        let currentSphere;
+        const spherePositions = [];
+        spherePositions.push(new THREE.Vector3(-APPCONFIG.PLANE_SIZE/2, APPCONFIG.PLANE_SIZE/2, 0));
+        spherePositions.push(new THREE.Vector3(APPCONFIG.PLANE_SIZE/2, APPCONFIG.PLANE_SIZE/2, 0));
+        spherePositions.push(new THREE.Vector3(APPCONFIG.PLANE_SIZE/2, -APPCONFIG.PLANE_SIZE/2, 0));
+        spherePositions.push(new THREE.Vector3(-APPCONFIG.PLANE_SIZE/2, -APPCONFIG.PLANE_SIZE/2, 0));
+
+        for (let i=0; i<APPCONFIG.NUM_CORNERS; ++i) {
+            currentSphere = new THREE.Mesh(sphereGeom, sphereMat);
+            currentSphere.position.copy(spherePositions[i]);
+            clipPlaneXGroup.add(currentSphere);
+        }
         let clipPlaneX = new THREE.Mesh(clipPlaneGeom, clipPlaneMat);
-        clipPlaneX.position.x = APPCONFIG.PLANE_START_X;
-        clipPlaneX.rotation.y = Math.PI/2;
-        clipPlaneX.renderOrder = APPCONFIG.RENDER_FIRST +2;
-        clipPlaneX.visible = false;
-        this.scene.add(clipPlaneX);
-        this.clipPlaneX = clipPlaneX;
+        clipPlaneXGroup.add(clipPlaneX);
+        clipPlaneXGroup.position.x = APPCONFIG.PLANE_START_X;
+        clipPlaneXGroup.rotation.y = Math.PI/2;
+        clipPlaneXGroup.renderOrder = APPCONFIG.RENDER_FIRST +2;
+        clipPlaneXGroup.visible = false;
+        clipPlaneXGroup.add(clipPlaneX);
+        this.clipPlaneXGroup = clipPlaneXGroup;
 
         // Top to bottom plane
         let clipPlaneY = new THREE.Mesh(clipPlaneGeom, clipPlaneMat);
@@ -467,7 +484,7 @@ class MedicalViz extends BaseApp {
         switch (planeID) {
             case APPCONFIG.CLIP_PLANE_X:
                 uniforms.u_clipPlaneX.value = value;
-                this.clipPlaneX.position.x = value;
+                this.clipPlaneXGroup.position.x = value;
                 break;
 
             case APPCONFIG.CLIP_PLANE_Y:
@@ -766,8 +783,8 @@ class MedicalViz extends BaseApp {
     toggleClipPlane(planeID) {
         switch (planeID) {
             case APPCONFIG.CLIP_PLANE_X:
-                this.clipPlaneX.visible = !this.clipPlaneX.visible;
-                uniforms.u_clipPlaneXEnabled.value = this.clipPlaneX.visible;
+                this.clipPlaneXGroup.visible = !this.clipPlaneXGroup.visible;
+                uniforms.u_clipPlaneXEnabled.value = this.clipPlaneXGroup.visible;
                 break;
 
             case APPCONFIG.CLIP_PLANE_Y:
@@ -930,6 +947,6 @@ $(document).ready( () => {
     $("#info").on("click", () => {
         $("#infoModal").modal();
     });
-    
+
     app.run();
 });

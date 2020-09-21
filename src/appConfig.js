@@ -30,7 +30,9 @@ const APPCONFIG = {
     RENDER_FIRST: 1000,
     CLIP_PLANE_X: 0,
     CLIP_PLANE_Y: 1,
-    CLIP_PLANE_Z: 2
+    CLIP_PLANE_Z: 2,
+    PLANE_CORNER_RADIUS: 2.5,
+    NUM_CORNERS: 4
 }
 
 // Line indices
