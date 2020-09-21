@@ -414,7 +414,6 @@ class MedicalViz extends BaseApp {
         clipPlaneXGroup.rotation.y = Math.PI/2;
         clipPlaneXGroup.renderOrder = APPCONFIG.RENDER_FIRST +2;
         clipPlaneXGroup.visible = false;
-        clipPlaneXGroup.add(clipPlaneX);
         this.clipPlaneXGroup = clipPlaneXGroup;
 
         // Top to bottom plane
@@ -431,17 +430,24 @@ class MedicalViz extends BaseApp {
         clipPlaneYGroup.position.z = APPCONFIG.PLANE_START_Z;
         clipPlaneYGroup.renderOrder = APPCONFIG.RENDER_FIRST + 1;
         clipPlaneYGroup.visible = false;
-        this.scene.add(clipPlaneYGroup);
         this.clipPlaneYGroup = clipPlaneYGroup;
 
         // Back to front plane
+        let clipPlaneZGroup = new THREE.Group();
+        this.scene.add(clipPlaneZGroup);
+
+        for (let i=0; i<APPCONFIG.NUM_CORNERS; ++i) {
+            currentSphere = new THREE.Mesh(sphereGeom, sphereMat);
+            currentSphere.position.copy(spherePositions[i]);
+            clipPlaneZGroup.add(currentSphere);
+        }
         let clipPlaneZ = new THREE.Mesh(clipPlaneGeom, clipPlaneMat);
-        clipPlaneZ.position.y = APPCONFIG.PLANE_START_Y;
-        clipPlaneZ.rotation.x = -Math.PI/2;
-        clipPlaneZ.renderOrder = APPCONFIG.RENDER_FIRST;
-        clipPlaneZ.visible = false;
-        this.scene.add(clipPlaneZ);
-        this.clipPlaneZ = clipPlaneZ;
+        clipPlaneZGroup.add(clipPlaneZ);
+        clipPlaneZGroup.position.y = APPCONFIG.PLANE_START_Y;
+        clipPlaneZGroup.rotation.x = -Math.PI/2;
+        clipPlaneZGroup.renderOrder = APPCONFIG.RENDER_FIRST;
+        clipPlaneZGroup.visible = false;
+        this.clipPlaneZGroup = clipPlaneZGroup;
     }
 
     createCubeSegments(width) {
@@ -507,7 +513,7 @@ class MedicalViz extends BaseApp {
 
             case APPCONFIG.CLIP_PLANE_Z:
                 uniforms.u_clipPlaneZ.value = value;
-                this.clipPlaneZ.position.y = value;
+                this.clipPlaneZGroup.position.y = value;
                 break;
 
             default:
@@ -806,8 +812,8 @@ class MedicalViz extends BaseApp {
                 break;
 
             case APPCONFIG.CLIP_PLANE_Z:
-                this.clipPlaneZ.visible = !this.clipPlaneZ.visible;
-                uniforms.u_clipPlaneZEnabled.value = this.clipPlaneZ.visible;
+                this.clipPlaneZGroup.visible = !this.clipPlaneZGroup.visible;
+                uniforms.u_clipPlaneZEnabled.value = this.clipPlaneZGroup.visible;
                 break;
 
             default:
