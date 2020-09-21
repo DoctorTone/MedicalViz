@@ -75,6 +75,11 @@ body {
     right: 1%;
     width: 15%;
 }
+#copyright {
+    bottom: 1%;
+    left: 1%;
+    width: 50%;
+}
 .switch {
     position: relative;
     display: inline-block;
