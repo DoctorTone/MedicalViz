@@ -387,13 +387,17 @@ class MedicalViz extends BaseApp {
             transparent: true,
             opacity: 0.25
         });
+
         // Right to left plane
-        let clipPlaneXGroup = new THREE.Group();
-        this.scene.add(clipPlaneXGroup);
+        // Add handles at each corner
+        const spherePositions = [];
         let sphereGeom = new THREE.SphereBufferGeometry(APPCONFIG.PLANE_CORNER_RADIUS);
         let sphereMat = new THREE.MeshLambertMaterial( { color: 0xffa500});
+
+        let clipPlaneXGroup = new THREE.Group();
+        this.scene.add(clipPlaneXGroup);
+        
         let currentSphere;
-        const spherePositions = [];
         spherePositions.push(new THREE.Vector3(-APPCONFIG.PLANE_SIZE/2, APPCONFIG.PLANE_SIZE/2, 0));
         spherePositions.push(new THREE.Vector3(APPCONFIG.PLANE_SIZE/2, APPCONFIG.PLANE_SIZE/2, 0));
         spherePositions.push(new THREE.Vector3(APPCONFIG.PLANE_SIZE/2, -APPCONFIG.PLANE_SIZE/2, 0));
@@ -414,12 +418,21 @@ class MedicalViz extends BaseApp {
         this.clipPlaneXGroup = clipPlaneXGroup;
 
         // Top to bottom plane
+        let clipPlaneYGroup = new THREE.Group();
+        this.scene.add(clipPlaneYGroup);
+
+        for (let i=0; i<APPCONFIG.NUM_CORNERS; ++i) {
+            currentSphere = new THREE.Mesh(sphereGeom, sphereMat);
+            currentSphere.position.copy(spherePositions[i]);
+            clipPlaneYGroup.add(currentSphere);
+        }
         let clipPlaneY = new THREE.Mesh(clipPlaneGeom, clipPlaneMat);
-        clipPlaneY.position.z = APPCONFIG.PLANE_START_Z;
-        clipPlaneY.renderOrder = APPCONFIG.RENDER_FIRST + 1;
-        clipPlaneY.visible = false;
-        this.scene.add(clipPlaneY);
-        this.clipPlaneY = clipPlaneY;
+        clipPlaneYGroup.add(clipPlaneY);
+        clipPlaneYGroup.position.z = APPCONFIG.PLANE_START_Z;
+        clipPlaneYGroup.renderOrder = APPCONFIG.RENDER_FIRST + 1;
+        clipPlaneYGroup.visible = false;
+        this.scene.add(clipPlaneYGroup);
+        this.clipPlaneYGroup = clipPlaneYGroup;
 
         // Back to front plane
         let clipPlaneZ = new THREE.Mesh(clipPlaneGeom, clipPlaneMat);
@@ -489,7 +502,7 @@ class MedicalViz extends BaseApp {
 
             case APPCONFIG.CLIP_PLANE_Y:
                 uniforms.u_clipPlaneY.value = value;
-                this.clipPlaneY.position.z = value;
+                this.clipPlaneYGroup.position.z = value;
                 break;
 
             case APPCONFIG.CLIP_PLANE_Z:
@@ -788,8 +801,8 @@ class MedicalViz extends BaseApp {
                 break;
 
             case APPCONFIG.CLIP_PLANE_Y:
-                this.clipPlaneY.visible = !this.clipPlaneY.visible;
-                uniforms.u_clipPlaneYEnabled.value = this.clipPlaneY.visible;
+                this.clipPlaneYGroup.visible = !this.clipPlaneYGroup.visible;
+                uniforms.u_clipPlaneYEnabled.value = this.clipPlaneYGroup.visible;
                 break;
 
             case APPCONFIG.CLIP_PLANE_Z:
