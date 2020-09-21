@@ -204,7 +204,7 @@ const fSolidShader = `
     }
 `
 
-const PLANE_INC = 1.0;
+let PLANE_INC = 1.0;
 
 // Front vertices
 const LEFT_EDGE_X = -80;
@@ -458,6 +458,11 @@ class MedicalViz extends BaseApp {
         this.renderUpdate = true;
     }
 
+    updateSampleDistance(distance) {
+        PLANE_INC = distance;
+        this.renderUpdate = true;
+    }
+    
     updateClipPlane(planeID, value) {
         switch (planeID) {
             case APPCONFIG.CLIP_PLANE_X:
@@ -828,6 +833,11 @@ $(document).ready( () => {
     let toggleClipPlaneY = $("#toggleClipPlaneY");
     let toggleClipPlaneZ = $("#toggleClipPlaneZ");
     let toggleShader = $("#toggleShader");
+    let sampleDist = $("#sampleDist");
+
+    sampleDist.on("change", event => {
+        app.updateSampleDistance(event.target.value);
+    });
 
     moveCubeLeft.on("mousedown", () => {
         app.moveClipCube(true, APPCONFIG.LEFT);
