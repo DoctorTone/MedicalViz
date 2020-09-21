@@ -11,6 +11,13 @@ body {
 .panel {
 	position: absolute;
 }
+.controlButton button {
+    width: 20%;
+    padding: 0.2rem 0.4rem;
+}
+.controlButton img {
+    width: 100%;
+}
 #slices {
 	top: 1%;
 	left: 1%;
@@ -58,7 +65,10 @@ body {
 #cubeControls {
 	top: 34%;
 	left: 2%;
-	width: 10%;
+	width: 12.5%;
+}
+#clipVolume {
+    margin-left: 17.5%;
 }
 #toggleShaderContainer {
     top: 40%;
