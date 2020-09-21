@@ -6,6 +6,29 @@
     <title>Medical Visualisation</title>
 </head>
 <body>
+    <!-- Information modal -->
+    <div class="modal fade" id="infoModal" tabindex="-1" role="dialog" aria-labelledby="infoModalLabel">
+        <div class="modal-dialog text-dark" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="infoModalLabel">Volume Rendering</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p>
+                        The model represents a collection of medical images visualised as a volume.
+                    </p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" data-dismiss="modal">OK</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Alpha properties-->
     <div id="alphaProperties" class="panel">
         <h6>Alpha Threshold</h6>
         <input type="range" class="form-control-range w-100 mb-3" id="alphaRange" min="0" max="255" step="1" value="10">
@@ -17,6 +40,9 @@
         <h6>Interaction scale</h6>
         <input type="range" class="form-control-range w-100" id="sampleScale" min="1" max="10" step="1" value="4">
     </div>
+
+    <!-- Clipping properties -->
+    <!-- Clipping planes -->
     <div id="clipPlanes" class="panel">
         <h5>Clipping</h5>
         <h6>Planes</h6>
@@ -39,6 +65,8 @@
         <span>Z</span>
         <input type="range" class="form-control-range w-100" id="clipPlaneZValue" min="-130" max="130" step="1" value="-130">
     </div>
+
+    <!-- Clip cube -->
     <div id="cubeControls" class="panel">
         <h6>Cube</h6>
         <div>
@@ -71,6 +99,8 @@
             <button type="button" id="clipVolume" class="btn btn-primary">Clip</button>
         </div>
     </div>
+
+    <!-- Appearance-->
     <div id="toggleShaderContainer" class="panel">
         <h6 class="mb-3">Appearance</h6>
         <span>Transparent</span>
@@ -80,9 +110,11 @@
         </label>
         <span>Solid</span>
     </div>
+
     <div id="copyright" class="panel">
         <span class="h6 text-warning">&copy DRT Software Ltd. 2020</span>
     </div>
+
     <div id="info" class="panel text-right">
         <img src="./images/info.png" alt="information">
     </div>

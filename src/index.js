@@ -462,7 +462,7 @@ class MedicalViz extends BaseApp {
         PLANE_INC = distance;
         this.renderUpdate = true;
     }
-    
+
     updateClipPlane(planeID, value) {
         switch (planeID) {
             case APPCONFIG.CLIP_PLANE_X:
@@ -927,5 +927,9 @@ $(document).ready( () => {
         app.toggleShader();
     });
 
+    $("#info").on("click", () => {
+        $("#infoModal").modal();
+    });
+    
     app.run();
 });
