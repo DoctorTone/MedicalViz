@@ -80,7 +80,6 @@ body {
 #toggleShaderContainer {
     top: 10%;
     right: 1%;
-    width: 40%;
 }
 #copyright {
     bottom: 1%;
@@ -93,7 +92,7 @@ body {
     width: 50%;
 }
 #info img {
-    width: 15%;
+    width: 20%;
 }
 .switch {
     position: relative;
@@ -148,6 +147,11 @@ input:checked + .slider:before {
 }
 
 /* Media queries */
+@media (min-width: 768px) and (orientation: landscape) {
+    #info img {
+        width: 12.5%;
+    }
+}
 @media (min-width: 768px) and (orientation: portrait) {
     #title {
         text-align: center;
@@ -159,7 +163,6 @@ input:checked + .slider:before {
     #toggleShaderContainer {
         top: 40%;
         right: 1%;
-        width: 50%;
     }
     #clipPlanes {
         display: block;
@@ -196,5 +199,10 @@ input:checked + .slider:before {
     }
     #info img {
         width: 7.5%;
+    }
+}
+@media (min-width: 1600px) {
+    #cubeControls {
+        width: 12.5%;
     }
 }
