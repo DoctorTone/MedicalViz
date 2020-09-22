@@ -39,10 +39,14 @@
         </div>
     </div>
 
+    <!-- Title -->
+    <div id="title" class="panel">
+        <h4>Volume rendering</h4>
+    </div>
     <!-- Alpha properties-->
-    <div id="alphaProperties" class="panel">
+    <div id="alphaProperties" class="panel d-none">
         <h6>Alpha Threshold</h6>
-        <input type="range" class="form-control-range w-100 mb-3" id="alphaRange" min="0" max="255" step="1" value="10">
+        <input type="range" class="form-control-range w-100 mb-3" id="alphaRange" min="0" max="255" step="1" value="30">
         <h6>Alpha scale</h6>
         <input type="range" class="form-control-range w-100 mb-3" id="alphaScale" min="0.01" max="1" step="0.01" value="1">
         <h6>Sample Distance</h6>
@@ -54,7 +58,7 @@
 
     <!-- Clipping properties -->
     <!-- Clipping planes -->
-    <div id="clipPlanes" class="panel">
+    <div id="clipPlanes" class="panel d-none">
         <h5>Clipping</h5>
         <h6>Planes</h6>
         <label class="switch">
@@ -78,7 +82,7 @@
     </div>
 
     <!-- Clip cube -->
-    <div id="cubeControls" class="panel">
+    <div id="cubeControls" class="panel d-none">
         <h6>Cube</h6>
         <div>
             <label class="switch">
@@ -113,7 +117,7 @@
 
     <!-- Appearance-->
     <div id="toggleShaderContainer" class="panel">
-        <h6 class="mb-3">Appearance</h6>
+        <h6 class="mb-3 d-none">Appearance</h6>
         <span>Transparent</span>
         <label class="switch">
             <input id="toggleShader" type="checkbox">

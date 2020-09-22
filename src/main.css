@@ -14,6 +14,10 @@ body {
 .controlButton img {
     width: 100%;
 }
+#title {
+    top: 1%;
+    left: 3%;
+}
 #slices {
 	top: 1%;
 	left: 1%;
@@ -67,9 +71,9 @@ body {
     margin-left: 17.5%;
 }
 #toggleShaderContainer {
-    top: 40%;
+    top: 10%;
     right: 1%;
-    width: 15%;
+    width: 40%;
 }
 #copyright {
     bottom: 1%;
@@ -82,7 +86,7 @@ body {
     width: 50%;
 }
 #info img {
-    width: 7.5%;
+    width: 15%;
 }
 .switch {
     position: relative;
