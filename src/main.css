@@ -67,7 +67,8 @@ body {
 #cubeControls {
 	top: 34%;
 	left: 2%;
-	width: 12.5%;
+    width: 20%;
+    display: none;
 }
 #clipVolume {
     margin-left: 17.5%;
@@ -154,6 +155,9 @@ input:checked + .slider:before {
         width: 50%;
     }
     #clipPlanes {
+        display: block;
+    }
+    #cubeControls {
         display: block;
     }
 }
