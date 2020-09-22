@@ -26,6 +26,7 @@ body {
     top: 2%;
     right: 1%;
     width: 15%;
+    display: none;
 }
 #clipPlanes {
     top: 3%;
@@ -138,4 +139,17 @@ input:checked + .slider:before {
 }
 .slider.round:before {
     border-radius: 50%;
+}
+
+/* Media queries */
+@media (min-width: 768px) {
+    #alphaProperties {
+        display: block;
+        width: 25%;
+    }
+    #toggleShaderContainer {
+        top: 40%;
+        right: 1%;
+        width: 50%;
+    }
 }
