@@ -14,6 +14,10 @@ body {
 .controlButton img {
     width: 100%;
 }
+.big-lead {
+    font-size: 2rem;
+    font-weight: 300;
+  }
 #title {
     top: 1%;
     left: 3%;
@@ -23,7 +27,7 @@ body {
 	left: 1%;
 }
 #alphaProperties {
-    top: 2%;
+    top: 5%;
     right: 1%;
     width: 15%;
     display: none;
@@ -65,7 +69,7 @@ body {
     width: 15%;
 }
 #cubeControls {
-	top: 34%;
+	top: 38%;
 	left: 2%;
     width: 20%;
     display: none;
@@ -144,7 +148,10 @@ input:checked + .slider:before {
 }
 
 /* Media queries */
-@media (min-width: 768px) {
+@media (min-width: 768px) and (orientation: portrait) {
+    #title {
+        text-align: center;
+    }
     #alphaProperties {
         display: block;
         width: 25%;
@@ -162,7 +169,24 @@ input:checked + .slider:before {
     }
 }
 @media (min-width: 1024px) {
+    #title {
+        text-align: center;
+    }
+    #alphaProperties {
+        display: block;
+    }
+    #clipPlanes {
+        display: block;
+    }
     #cubeControls {
-        top: 42.5%;
+        display: block;
+        top: 45%;
+        width: 15%;
+    }
+    #info img {
+        width: 12.5%;
+    }
+    #toggleShaderContainer {
+        top: 45%;
     }
 }
