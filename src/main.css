@@ -29,9 +29,10 @@ body {
     display: none;
 }
 #clipPlanes {
-    top: 3%;
+    top: 5%;
     left: 2%;
-    width: 15%;
+    width: 17.5%;
+    display: none;
 }
 #alphaThreshold {
 	top: 5%;
@@ -151,5 +152,8 @@ input:checked + .slider:before {
         top: 40%;
         right: 1%;
         width: 50%;
+    }
+    #clipPlanes {
+        display: block;
     }
 }
