@@ -161,3 +161,8 @@ input:checked + .slider:before {
         display: block;
     }
 }
+@media (min-width: 1024px) {
+    #cubeControls {
+        top: 42.5%;
+    }
+}
