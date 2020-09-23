@@ -240,7 +240,7 @@ volumeVertices.push(new THREE.Vector3(LEFT_EDGE_X, BOTTOM_EDGE_Y, BACK_EDGE_Z));
 
 const uniforms = {
     u_data: { value: null },
-    u_slices: { value: new THREE.Vector3(160, 256, 221)},
+    u_slices: { value: new THREE.Vector3()},
     u_thresh: { value: $("#alphaRange").val() / 255.0 },
     u_alphaScale: { value: $("#alphaScale").val() },
     u_clipPlaneX: { value: $("#clipPlaneXValue").val() },
@@ -357,6 +357,7 @@ class MedicalViz extends BaseApp {
             texture3D.type = THREE.UnsignedByteType;
             texture3D.minFilter = texture3D.magFilter = THREE.LinearFilter;
             texture3D.unpackAlignment = 1;
+            uniforms.u_slices.value.set(TEXTURE_SIZE_X, TEXTURE_SIZE_Y, TEXTURE_SIZE_Z);
             uniforms.u_data.value = texture3D;
 
             this.renderUpdate = true;
