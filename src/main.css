@@ -179,6 +179,7 @@ input:checked + .slider:before {
     }
     #alphaProperties {
         display: block;
+        width: 20%;
     }
     #clipPlanes {
         display: block;
