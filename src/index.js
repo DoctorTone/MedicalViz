@@ -1,7 +1,5 @@
 import $ from "jquery";
 import * as THREE from "three";
-//import { TrackballControls } from "three-trackballcontrols";
-let TrackballControls = require("three-trackballcontrols");
 
 import { BaseApp } from "./baseApp";
 import "bootstrap";
@@ -850,7 +848,7 @@ $( () => {
     // Info for small res devices
     if (window.innerWidth < APPCONFIG.MIN_DEVICE_WIDTH) {
         $("#warningModal").modal();
-    };
+    }
 
     // Initialise
     const app = new MedicalViz();

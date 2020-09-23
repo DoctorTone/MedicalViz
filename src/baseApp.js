@@ -113,7 +113,7 @@ export class BaseApp {
         }
     }
 
-    windowResize(event) {
+    windowResize() {
         //Handle window resize
         this.camera.aspect = window.innerWidth / window.innerHeight;
         this.camera.updateProjectionMatrix();
@@ -188,18 +188,13 @@ export class BaseApp {
         // Disable controls
         const controlsDisabled = false;
         this.controls.noRotate = controlsDisabled;
-	    this.controls.noZoom = controlsDisabled;
+        this.controls.noZoom = controlsDisabled;
         this.controls.noPan = true;
         
         this.controls.keys = [ 65, 83, 68 ];
 
         let lookAt = new THREE.Vector3(SceneConfig.LookAtPos.x, SceneConfig.LookAtPos.y, SceneConfig.LookAtPos.z);
         this.controls.target.copy(lookAt);
-    }
-
-    setCamera(mode) {
-        let camPos = mode === NEAR ? this.camPosNear : this.camPosFar;
-        this.camera.position.copy(camPos);
     }
 
     update() {
