@@ -825,6 +825,14 @@ class MedicalViz extends BaseApp {
         this.currentShader = this.currentShader === transparentVolumeShader ? solidVolumeShader : transparentVolumeShader;
         this.renderUpdate = true;
     }
+
+    stopNotifications(elemList) {
+        for(let i=0, numElems=elemList.length; i<numElems; ++i) {
+            $('#' + elemList[i]).contextmenu(() => {
+                return false;
+            });
+        }
+    }
 }
 
 $(document).ready( () => {
@@ -875,6 +883,7 @@ $(document).ready( () => {
         app.updateSampleDistance(event.target.value);
     });
 
+    // Move cube via mouse
     moveCubeLeft.on("mousedown", () => {
         app.moveClipCube(true, APPCONFIG.LEFT);
     });
@@ -939,10 +948,76 @@ $(document).ready( () => {
         app.scaleClipCube(false);
     });
 
+    // Move cube via touch
+    moveCubeLeft.on("touchstart", () => {
+        app.moveClipCube(true, APPCONFIG.LEFT);
+    });
+
+    moveCubeLeft.on("touchend", () => {
+        app.moveClipCube(false);
+    });
+
+    moveCubeRight.on("touchstart", () => {
+        app.moveClipCube(true, APPCONFIG.RIGHT);
+    });
+
+    moveCubeRight.on("touchend", () => {
+        app.moveClipCube(false);
+    });
+
+    moveCubeDown.on("touchstart", () => {
+        app.moveClipCube(true, APPCONFIG.DOWN);
+    });
+
+    moveCubeDown.on("touchend", () => {
+        app.moveClipCube(false);
+    });
+
+    moveCubeUp.on("touchstart", () => {
+        app.moveClipCube(true, APPCONFIG.UP);
+    });
+
+    moveCubeUp.on("touchend", () => {
+        app.moveClipCube(false);
+    });
+
+    moveCubeBack.on("touchstart", () => {
+        app.moveClipCube(true, APPCONFIG.BACK);
+    });
+
+    moveCubeBack.on("touchend", () => {
+        app.moveClipCube(false);
+    });
+
+    moveCubeForward.on("touchstart", () => {
+        app.moveClipCube(true, APPCONFIG.FORWARD);
+    });
+
+    moveCubeForward.on("touchend", () => {
+        app.moveClipCube(false);
+    });
+
+    scaleCubeDown.on("touchstart", () => {
+        app.scaleClipCube(true, APPCONFIG.SCALE_DOWN);
+    });
+
+    scaleCubeDown.on("touchend", () => {
+        app.scaleClipCube(false);
+    });
+
+    scaleCubeUp.on("touchstart", () => {
+        app.scaleClipCube(true, APPCONFIG.SCALE_UP);
+    });
+
+    scaleCubeUp.on("touchend", () => {
+        app.scaleClipCube(false);
+    });
+
     clipVolume.on("click", () => {
         app.clipVolume();
     });
 
+    // Toggle clip planes
     toggleClipCube.on("click", () => {
         app.toggleClipCube();
     });
@@ -966,6 +1041,9 @@ $(document).ready( () => {
     $("#info").on("click", () => {
         $("#infoModal").modal();
     });
+
+    let elemList = ["title", "alphaProperties", "clipPlanes", "cubeControls", "toggleShaderContainer", "copyright", "info"];
+    app.stopNotifications(elemList);
 
     app.run();
 });

@@ -3,6 +3,8 @@ body {
 	background-color: #000000;
 	color: #ffffff;
     overflow: hidden;
+    -webkit-user-select: none;
+    -webkit-touch-callout: none;
 }
 .panel {
 	position: absolute;
