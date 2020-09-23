@@ -193,7 +193,7 @@ input:checked + .slider:before {
         width: 12.5%;
     }
     #toggleShaderContainer {
-        top: 45%;
+        top: 50%;
     }
 }
 @media (min-width: 1200px) {
