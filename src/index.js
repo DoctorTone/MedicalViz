@@ -485,6 +485,10 @@ class MedicalViz extends BaseApp {
 
         if (this.cubeScaling) {
             this.clipCube.scale.addScaledVector(this.cubeScale, delta * APPCONFIG.SCALE_SPEED);
+            // Do not scale beyond zero
+            if (this.clipCube.scale.x < APPCONFIG.MIN_CUBE_SCALE) {
+                this.clipCube.scale.set(APPCONFIG.MIN_CUBE_SCALE, APPCONFIG.MIN_CUBE_SCALE, APPCONFIG.MIN_CUBE_SCALE);
+            }
         }
 
         super.update();
@@ -792,7 +796,7 @@ class MedicalViz extends BaseApp {
 
     clipVolume() {
         if (!this.clipCube.visible) return;
-        
+
         this.clipCube.geometry.computeBoundingBox();
         // Take scaling into account
         this.clipCube.geometry.boundingBox.max.multiply(this.clipCube.scale);

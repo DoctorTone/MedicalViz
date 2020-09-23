@@ -32,7 +32,8 @@ const APPCONFIG = {
     CLIP_PLANE_Y: 1,
     CLIP_PLANE_Z: 2,
     PLANE_CORNER_RADIUS: 2.5,
-    NUM_CORNERS: 4
+    NUM_CORNERS: 4,
+    MIN_CUBE_SCALE: 0.25
 }
 
 // Line indices
