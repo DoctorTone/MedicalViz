@@ -733,6 +733,8 @@ class MedicalViz extends BaseApp {
     }
 
     moveClipCube(status, direction) {
+        if (!this.clipCube.visible) return;
+
         switch (direction) {
             case APPCONFIG.LEFT:
                 this.cubeDirection = DIR_LEFT;
@@ -766,6 +768,8 @@ class MedicalViz extends BaseApp {
     }
 
     scaleClipCube(status, direction) {
+        if (!this.clipCube.visible) return;
+
         switch (direction) {
             case APPCONFIG.SCALE_DOWN:
                 this.cubeScale = CUBE_SCALE_DOWN;
@@ -787,6 +791,8 @@ class MedicalViz extends BaseApp {
     }
 
     clipVolume() {
+        if (!this.clipCube.visible) return;
+        
         this.clipCube.geometry.computeBoundingBox();
         // Take scaling into account
         this.clipCube.geometry.boundingBox.max.multiply(this.clipCube.scale);
