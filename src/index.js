@@ -845,12 +845,12 @@ class MedicalViz extends BaseApp {
     }
 }
 
-$(document).ready( () => {
+$( () => {
     // Info for small res devices
     if (window.innerWidth < APPCONFIG.MIN_DEVICE_WIDTH) {
         $("#warningModal").modal();
     };
-    
+
     // Initialise
     const app = new MedicalViz();
 
