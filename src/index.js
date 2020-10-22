@@ -358,6 +358,8 @@ class MedicalViz extends BaseApp {
             uniforms.u_slices.value.set(TEXTURE_SIZE_X, TEXTURE_SIZE_Y, TEXTURE_SIZE_Z);
             uniforms.u_data.value = texture3D;
 
+            $("#loading").addClass("d-none");
+
             this.renderUpdate = true;
         });
 
